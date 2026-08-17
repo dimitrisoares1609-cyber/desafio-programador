@@ -310,6 +310,20 @@ O Tesseract emite o TSV com `\r\n` em alguns ambientes; o `lerTsv` fazia
 zerando a leitura de OCR fora do Linux. Passou a `split(/\r?\n/)` — sem efeito
 no Docker (alvo), mas destrava rodar e validar o OCR em qualquer sistema.
 
+### Cartão mecânico ilegível (time-card-04) — recusa medida
+
+Cartão de ponto mecânico, matricial borrado sobre grade colorida, mês
+manuscrito, dividido em 1ª/2ª quinzena com colunas MANHÃ/TARDE/EXTRA. Rodei o
+OCR a 300 dpi nas 5 páginas e medi: **76% a 96% dos caracteres saem como `?`** e
+o total de dígitos legíveis nas cinco páginas juntas é **seis**. Um cartão é
+essencialmente dígitos (dias 1–31 e horários HH:MM); sem dígitos não há o que
+transcrever. O único texto estável é a palavra "Saida" de um cabeçalho.
+
+Mantido recusado (`ErroLayoutDesconhecido`), como manda o critério de
+honestidade: inventar horários a partir de tinta borrada seria o pior resultado
+possível neste domínio. O mês manuscrito no cabeçalho não é sequer tentado — o
+Tesseract não lê manuscrito, e chutar "abril" seria fabricar competência.
+
 ## Testes
 
 Quinze testes, escolhidos por um critério só: **cada um cobre um caso em que a

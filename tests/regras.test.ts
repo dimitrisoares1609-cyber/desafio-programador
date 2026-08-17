@@ -439,3 +439,17 @@ test('recibo: dois recibos na mesma página — lê só o primeiro', () => {
   const p = perfilReciboPagamento.ler(RECIBO + '\n' + RECIBO, 1);
   assert.deepEqual(p.fields.map((f) => f.label), ['SALARIO', 'DSR COMISSAO', 'INSS MES', 'VALE REFEICAO']);
 });
+
+// ---------- Tarefa 3: cartão mecânico ilegível (time-card-04) ----------
+
+test('cartão em que o OCR só devolve "?" é recusado, não inventado', () => {
+  // Espelha o time-card-04: matriz borrada sobre grade, quase tudo ilegível.
+  const ilegivel = [
+    '   ??? ?????? | ????? | ?????? | ????? | ??????? | Saida ???',
+    '    ?     ? ?   ?  ?  ?',
+    '     ???    ???? ?? ?? ??',
+    '   ?  ????  ??? ?? ??   ?',
+    '     ??? ?? ??? ?? ?? ??',
+  ].join('\n');
+  assert.throws(() => extrairCartaoPonto(pag(ilegivel)), ErroLayoutDesconhecido);
+});
