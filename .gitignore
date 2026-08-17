@@ -1,29 +1,5 @@
-# Saídas geradas pela aplicação
-output/
-
-# Ferramentas internas de correção (não publicar)
-avaliacao/
-
-# Dependências
 node_modules/
-venv/
-env/
-__pycache__/
-*.pyc
-
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Sistemas operacionais
-.DS_Store
-Thumbs.db
-
-# Ambiente
+dist/
+dados/
 .env
-.env.local
-
-# NOTA: os PDFs de `exemplos/` e as planilhas entregues devem ser
-# versionados. Não adicione `*.pdf` / `*.xlsx` aqui.
+*.log

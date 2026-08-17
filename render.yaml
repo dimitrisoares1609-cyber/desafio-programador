@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: quickfiller-transcricao
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /healthz
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: DATA_DIR
+        value: /dados
+      - key: MAX_UPLOAD_MB
+        value: 20
+      - key: RETENCAO_HORAS
+        value: 24
+      # OCR a 300 dpi e' pesado; no plano free (0,5 vCPU) uma pagina por vez
+      # evita que a fila cresca mais rapido do que esvazia.
+      - key: CONCORRENCIA
+        value: 1
+      - key: MAX_PAGINAS
+        value: 40

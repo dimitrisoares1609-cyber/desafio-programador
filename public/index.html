@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Transcrição de documentos trabalhistas</title>
+<style>
+  /* Paleta ancorada no #173772 do cabeçalho da planilha: a tela e o arquivo
+     exportado usam as MESMAS cores, para o revisor não precisar reaprender o
+     significado de amarelo e vermelho ao abrir o xlsx. */
+  :root {
+    --azul: #173772;
+    --azul-claro: #2a5298;
+    --amarelo: #FFF3CD;
+    --vermelho: #F8D7DA;
+    --borda-vermelha: #DC3545;
+    --texto: #1A1A1A;
+    --texto-suave: #5A6472;
+    --fundo: #F5F6F8;
+    --superficie: #FFFFFF;
+    --linha: #DFE3E8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--texto);
+    background: var(--fundo);
+  }
+  header {
+    background: var(--azul);
+    color: #fff;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  header h1 { font-size: 16px; margin: 0; letter-spacing: -0.01em; font-weight: 600; }
+  header .sub { font-size: 12px; opacity: 0.75; }
+
+  .envio { display: flex; gap: 8px; align-items: center; margin-left: auto; flex-wrap: wrap; }
+  select, input[type=file] {
+    font: inherit; padding: 6px 8px; border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.12); color: #fff;
+  }
+  select option { color: var(--texto); }
+  input[type=file]::file-selector-button {
+    font: inherit; border: 0; border-radius: 4px; padding: 4px 10px;
+    margin-right: 8px; cursor: pointer; background: #fff; color: var(--azul);
+  }
+  button {
+    font: inherit; font-weight: 600; padding: 7px 16px; border-radius: 6px;
+    border: 0; cursor: pointer; background: #fff; color: var(--azul);
+  }
+  button:hover:not(:disabled) { background: #E8EDF5; }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  button.secundario { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4); }
+  button.secundario:hover:not(:disabled) { background: rgba(255,255,255,0.12); }
+
+  main { padding: 24px; }
+  .vazio { text-align: center; color: var(--texto-suave); padding: 64px 24px; }
+
+  /* Progresso: processar leva tempo e a tela não pode parecer travada. */
+  .progresso {
+    background: var(--superficie); border: 1px solid var(--linha); border-radius: 8px;
+    padding: 24px; display: flex; align-items: center; gap: 16px;
+  }
+  .spinner {
+    width: 20px; height: 20px; border-radius: 50%; flex: none;
+    border: 2px solid var(--linha); border-top-color: var(--azul);
+    animation: girar 0.8s linear infinite;
+  }
+  @keyframes girar { to { transform: rotate(360deg); } }
+
+  .painel { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 980px) { .painel { grid-template-columns: 1fr; } }
+
+  .caixa {
+    background: var(--superficie); border: 1px solid var(--linha);
+    border-radius: 8px; overflow: hidden;
+  }
+  .caixa > h2 {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--texto-suave); margin: 0; padding: 12px 16px;
+    border-bottom: 1px solid var(--linha); font-weight: 600;
+  }
+  .rolagem { max-height: 68vh; overflow: auto; }
+  embed { width: 100%; height: 68vh; display: block; border: 0; }
+
+  table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 13px; }
+  th {
+    background: var(--azul); color: #fff; font-weight: 600; text-align: left;
+    padding: 8px 10px; position: sticky; top: 0; z-index: 2; white-space: nowrap;
+  }
+  td { padding: 0; border-bottom: 1px solid var(--linha); }
+  td input {
+    width: 100%; min-width: 90px; border: 0; background: transparent; font: inherit;
+    padding: 7px 10px; color: inherit;
+  }
+  td input:focus { outline: 2px solid var(--azul-claro); outline-offset: -2px; background: #fff; }
+  td.travada { padding: 7px 10px; color: var(--texto-suave); }
+  tr.amarelo td { background: var(--amarelo); }
+  tr.vermelho td { background: var(--vermelho); }
+  tr.vermelho td:first-child { box-shadow: inset 3px 0 0 var(--borda-vermelha); }
+  /* Célula com "?" ganha marca própria: a incerteza é POR CARACTERE, e a
+     linha inteira amarela não diz qual campo a máquina não leu. */
+  td.incerto input { font-weight: 600; text-decoration: underline wavy var(--borda-vermelha) 1px; }
+  .motivo { display: block; font-size: 11px; color: #6B3B00; padding: 2px 10px 6px; }
+  tr.vermelho .motivo { color: #7A1620; }
+
+  .legenda {
+    display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px;
+    color: var(--texto-suave); padding: 10px 16px; border-top: 1px solid var(--linha);
+  }
+  .legenda span::before {
+    content: ''; display: inline-block; width: 10px; height: 10px;
+    border-radius: 2px; margin-right: 6px; vertical-align: -1px;
+  }
+  .legenda .am::before { background: var(--amarelo); border: 1px solid #E0C67A; }
+  .legenda .vm::before { background: var(--vermelho); border: 1px solid var(--borda-vermelha); }
+
+  .acoes {
+    display: flex; gap: 8px; align-items: center; padding: 12px 16px;
+    border-top: 1px solid var(--linha); flex-wrap: wrap;
+  }
+  .acoes button { background: var(--azul); color: #fff; }
+  .acoes button:hover:not(:disabled) { background: var(--azul-claro); }
+  .acoes button.ghost { background: transparent; color: var(--azul); border: 1px solid var(--linha); }
+  .estado { font-size: 12px; color: var(--texto-suave); margin-left: auto; }
+  .erro {
+    background: var(--vermelho); border: 1px solid var(--borda-vermelha);
+    color: #7A1620; padding: 12px 16px; border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Transcrição de documentos trabalhistas</h1>
+    <div class="sub">cartão de ponto e holerite · revise antes de baixar</div>
+  </div>
+  <div class="envio">
+    <select id="tipo">
+      <option value="cartao-ponto">Cartão de ponto</option>
+      <option value="holerite">Holerite</option>
+    </select>
+    <input type="file" id="arquivo" accept="application/pdf" />
+    <button id="enviar">Enviar</button>
+    <button id="reiniciar" class="secundario" hidden>Novo documento</button>
+  </div>
+</header>
+
+<main id="main">
+  <div class="vazio">Escolha um PDF e o tipo de documento para começar.</div>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const main = $('#main');
+let idAtual = null;
+let valueAtual = null;   // o JSON da transcrição, fonte da verdade no cliente
+let sujo = false;        // há edição não salva?
+
+function html(s) { main.innerHTML = s; }
+function escapar(s) {
+  return String(s).replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+}
+
+// ---------- Envio ----------
+
+$('#enviar').addEventListener('click', async () => {
+  const arquivo = $('#arquivo').files[0];
+  if (!arquivo) return alert('Escolha um PDF.');
+
+  const form = new FormData();
+  form.append('arquivo', arquivo);
+  form.append('tipo', $('#tipo').value);
+
+  $('#enviar').disabled = true;
+  html('<div class="progresso"><div class="spinner"></div><div><strong>Enviando…</strong></div></div>');
+
+  try {
+    const r = await fetch('/api/transcricoes', { method: 'POST', body: form });
+    const corpo = await r.json();
+    if (!r.ok) throw new Error(corpo.erro || 'Falha no envio');
+    idAtual = corpo.id;
+    $('#reiniciar').hidden = false;
+    acompanhar();
+  } catch (e) {
+    html('<div class="erro">' + escapar(e.message) + '</div>');
+    $('#enviar').disabled = false;
+  }
+});
+
+$('#reiniciar').addEventListener('click', () => {
+  if (sujo && !confirm('Há edições não salvas. Descartar?')) return;
+  idAtual = null; valueAtual = null; sujo = false;
+  $('#enviar').disabled = false;
+  $('#reiniciar').hidden = true;
+  html('<div class="vazio">Escolha um PDF e o tipo de documento para começar.</div>');
+});
+
+// ---------- Acompanhamento ----------
+// Polling: o POST devolve 202 e o trabalho roda fora do request. O intervalo
+// cresce até 3s para não martelar o servidor num PDF longo de OCR.
+
+async function acompanhar() {
+  let espera = 600;
+  const inicio = Date.now();
+
+  while (true) {
+    const r = await fetch('/api/transcricoes/' + idAtual);
+    const t = await r.json();
+    const seg = Math.round((Date.now() - inicio) / 1000);
+
+    if (t.status === 'processando') {
+      html(
+        '<div class="progresso"><div class="spinner"></div><div>' +
+        '<strong>Processando o documento…</strong>' +
+        '<div style="color:var(--texto-suave);font-size:13px">' +
+        'Páginas escaneadas passam por OCR e levam mais tempo. ' + seg + 's</div>' +
+        '</div></div>'
+      );
+      await new Promise((res) => setTimeout(res, espera));
+      espera = Math.min(espera * 1.3, 3000);
+      continue;
+    }
+
+    $('#enviar').disabled = false;
+    if (t.status === 'erro') {
+      html('<div class="erro"><strong>Não foi possível transcrever.</strong><br>' +
+           escapar(t.erro || '') + '</div>');
+      return;
+    }
+    await desenharRevisao();
+    return;
+  }
+}
+
+// ---------- Revisão ----------
+
+async function desenharRevisao() {
+  const r = await fetch('/api/transcricoes/' + idAtual + '/tabela');
+  const t = await r.json();
+  if (!r.ok) return html('<div class="erro">' + escapar(t.erro) + '</div>');
+
+  valueAtual = t.value;
+  const porLinha = new Map(t.avisos.map((a) => [a.linha, a]));
+
+  let corpo = '';
+  t.linhas.forEach((celulas, i) => {
+    const aviso = porLinha.get(i);
+    const classe = aviso ? aviso.severidade : '';
+    corpo += '<tr class="' + classe + '">';
+    celulas.forEach((valor, j) => {
+      const ref = t.refs[i][j];
+      const incerto = String(valor).includes('?') ? 'incerto' : '';
+      if (ref.tipo === 'nao-editavel') {
+        corpo += '<td class="travada">' + escapar(valor) + '</td>';
+      } else {
+        corpo +=
+          '<td class="' + incerto + '"><input value="' + escapar(valor) +
+          '" data-linha="' + i + '" data-coluna="' + j + '" /></td>';
+      }
+    });
+    corpo += '</tr>';
+    if (aviso) {
+      // O motivo aparece legível na própria tabela, não só como cor.
+      corpo +=
+        '<tr class="' + classe + '"><td colspan="' + celulas.length +
+        '"><span class="motivo">' + escapar(aviso.motivo) + '</span></td></tr>';
+    }
+  });
+
+  html(
+    '<div class="painel">' +
+      '<div class="caixa">' +
+        '<h2>Transcrição — ' + escapar(t.tipo) + ' · ' + t.linhas.length + ' linhas</h2>' +
+        '<div class="rolagem"><table><thead><tr>' +
+          t.colunas.map((c) => '<th>' + escapar(c) + '</th>').join('') +
+        '</tr></thead><tbody>' + corpo + '</tbody></table></div>' +
+        '<div class="legenda">' +
+          '<span class="am">Batidas ímpares, página vazia ou caractere não lido</span>' +
+          '<span class="vm">Data ou mês fora de sequência</span>' +
+          '<span>Sublinhado ondulado = "?", a máquina não leu este caractere</span>' +
+        '</div>' +
+        '<div class="acoes">' +
+          '<button id="salvar" disabled>Salvar correções</button>' +
+          '<button class="ghost" data-baixar="xlsx">Baixar .xlsx</button>' +
+          '<button class="ghost" data-baixar="csv">.csv</button>' +
+          '<button class="ghost" data-baixar="json">.json</button>' +
+          '<span class="estado" id="estado">sem alterações</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="caixa">' +
+        '<h2>Documento original</h2>' +
+        '<embed src="/api/transcricoes/' + idAtual + '/pdf" type="application/pdf" />' +
+      '</div>' +
+    '</div>'
+  );
+
+  ligarEdicao(t);
+}
+
+function ligarEdicao(t) {
+  main.querySelectorAll('td input').forEach((campo) => {
+    campo.addEventListener('input', () => {
+      const ref = t.refs[+campo.dataset.linha][+campo.dataset.coluna];
+      aplicar(ref, campo.value);
+      sujo = true;
+      $('#salvar').disabled = false;
+      $('#estado').textContent = 'alterações não salvas';
+    });
+  });
+
+  $('#salvar').addEventListener('click', async () => {
+    $('#salvar').disabled = true;
+    $('#estado').textContent = 'salvando…';
+    const r = await fetch('/api/transcricoes/' + idAtual, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ value: valueAtual }),
+    });
+    if (!r.ok) {
+      const e = await r.json();
+      $('#estado').textContent = 'erro ao salvar: ' + (e.erro || '');
+      $('#salvar').disabled = false;
+      return;
+    }
+    sujo = false;
+    // Redesenha a partir do servidor: os avisos são derivados lá, então uma
+    // data corrigida recolore a linha sem a regra existir no front.
+    await desenharRevisao();
+  });
+
+  main.querySelectorAll('[data-baixar]').forEach((b) => {
+    b.addEventListener('click', () => {
+      if (sujo && !confirm('Há edições não salvas. Baixar mesmo assim?')) return;
+      location.href = '/api/transcricoes/' + idAtual + '/planilha?formato=' + b.dataset.baixar;
+    });
+  });
+}
+
+/**
+ * Escreve a edição de volta no `value`. Só escrita indexada — nenhuma regra
+ * de negócio mora aqui, e é de propósito: colunas, avisos e cores continuam
+ * sendo calculados no servidor.
+ */
+function aplicar(ref, texto) {
+  const pagina = valueAtual.pages[ref.p];
+
+  if (ref.tipo === 'data') {
+    // date_raw é o que está impresso. Quem corrige está afirmando o que leu
+    // no PDF, então o campo bruto é o que muda.
+    pagina.days[ref.d].date_raw = texto;
+    return;
+  }
+
+  if (ref.tipo === 'batida') {
+    const dia = pagina.days[ref.d];
+    const kind = ref.slot % 2 === 0 ? 'IN' : 'OUT';
+    if (ref.punchIndex !== null) {
+      if (texto.trim() === '') {
+        dia.punches.splice(ref.punchIndex, 1);
+      } else {
+        dia.punches[ref.punchIndex].time_raw = texto;
+        dia.punches[ref.punchIndex].time_hhmm = texto;
+      }
+      return;
+    }
+    if (texto.trim() === '') return;
+    // Batida nova numa coluna vazia: entra depois da última batida cujo slot
+    // é menor, para não embaralhar a ordem do documento.
+    let destino = 0;
+    for (let s = 0; s < ref.slot && destino < dia.punches.length; s++) destino++;
+    dia.punches.splice(Math.min(destino, dia.punches.length), 0, {
+      kind, time_raw: texto, time_hhmm: texto,
+    });
+    return;
+  }
+
+  if (ref.tipo === 'competencia') {
+    pagina[ref.campo] = texto;
+    return;
+  }
+
+  if (ref.tipo === 'verba') {
+    if (ref.fieldIndex !== null) {
+      pagina.fields[ref.fieldIndex].value = texto;
+    } else if (texto.trim() !== '') {
+      pagina.fields.push({ code: '', label: ref.label, reference: '', value: texto });
+    }
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      # lint aqui é o próprio typecheck: o projeto é TypeScript estrito, e um
+      # erro de tipo pega mais coisa real que uma regra de estilo.
+      - run: npm run lint
+      - run: npm run build
+      - run: npm test
+
+  imagem:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # O requisito duro é "docker compose up sobe tudo". Se a imagem parar de
+      # construir, é melhor descobrir aqui que na véspera da entrega.
+      - run: docker compose build
+      - run: docker compose up -d
+      - name: Esperar o healthz responder
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fs http://localhost:3000/healthz; then exit 0; fi
+            sleep 2
+          done
+          docker compose logs
+          exit 1
+      - run: docker compose down
