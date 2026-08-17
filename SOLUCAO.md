@@ -179,11 +179,13 @@ inventar informação que não está na linha, e o campo se chama `_raw`
 justamente para guardar o impresso.
 
 **3. Dois demonstrativos na mesma página.** Alguns holerites trazem dois
-documentos por página do PDF. Como o contrato tem um `year`/`month` e um
-`fields[]` por página, e mesclar os dois misturaria competências diferentes,
-esses arquivos são recusados em vez de transcritos pela metade. É o mesmo
-critério do item de recusa acima: entrega vazia e honesta em vez de dado
-plausível e errado.
+documentos por página do PDF. O contrato tem um `year`/`month` e um `fields[]`
+por página, então mesclar dois de **competências diferentes** misturaria dados
+e continua recusado. O `payroll-04` é o caso benigno: os dois são **vias
+idênticas** do mesmo recibo (via do empregado e via do empregador), então o
+perfil `holerite-recibo-pagamento` lê só o primeiro — leitura completa, sem
+duplicar nem misturar. Se um dia as duas vias divergirem, ler a primeira ainda
+é a escolha honesta.
 
 ## Segurança e privacidade
 
@@ -244,7 +246,7 @@ confirma a aposta na arquitetura de perfis.
 | `payroll-01` | Ficha financeira multi-coluna | sim | — | recusado de propósito |
 | `payroll-02` | Declaração de Remuneração (MÊS + ACERTO) | sim | genérico | lê correto (verbas + bases) |
 | `payroll-03` | Demonstrativo de Pagamento Mensal | sim | genérico | lê correto (verbas + bases) |
-| `payroll-04` | Recibo de Pagamento, dois por página | **só o carimbo** | genérico | saída não validada |
+| `payroll-04` | Recibo de Pagamento, dois por página | **só o carimbo** | `holerite-recibo-pagamento` | lê o 1º recibo de cada página |
 
 Cinco dos oito são escaneados ou quase — o enunciado avisou, e é mesmo assim
 que a maior parte do material chega.
@@ -287,6 +289,26 @@ os pares da linha; o rótulo terminado em `:` é o que distingue rodapé de verb
 (a tabela de verbas não usa dois pontos antes do valor). As linhas `Total` e
 `Líquido`, que não têm dois pontos, entram como bases só depois que a tabela de
 verbas começou — nunca no cabeçalho.
+
+### Recibo de Pagamento em duas colunas (payroll-04)
+
+Layout com Proventos à esquerda e Descontos à direita na mesma linha física. O
+perfil `holerite-recibo-pagamento` acha a coluna onde a tabela de Descontos
+começa (o segundo `Descrição` do sub-cabeçalho — a palavra "Descontos" é
+centralizada e não marca o início da coluna), corta cada linha ali e lê os dois
+lados. `fields[]` soma primeiro os proventos, depois os descontos; totais
+(`TOTAL DE PROVENTOS/DESCONTOS`, `LÍQUIDO A RECEBER`) e o rodapé de bases
+(Salário Base, Base INSS, FGTS do Mês…) vão para `bases[]`. É escaneado, então
+descrições saem com a primeira letra comida pela grade (`OTAL`, `ALE`,
+`????????`) — os **valores**, que é o que importa no cálculo, saem corretos.
+Onde o mês não é legível, a competência fica `??/????` em vez de chutada.
+
+### Correção de portabilidade no OCR (linha do TSV)
+
+O Tesseract emite o TSV com `\r\n` em alguns ambientes; o `lerTsv` fazia
+`split('\n')` e o `\r` grudava em `text`, quebrando o `indexOf` do cabeçalho e
+zerando a leitura de OCR fora do Linux. Passou a `split(/\r?\n/)` — sem efeito
+no Docker (alvo), mas destrava rodar e validar o OCR em qualquer sistema.
 
 ## Testes
 

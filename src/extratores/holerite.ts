@@ -5,6 +5,7 @@ import {
   escolherPerfil,
   type PerfilLayout,
 } from './layouts';
+import { perfilReciboPagamento } from './perfis/reciboPagamento';
 
 /** A decisão central deste extrator é fields[] vs bases[]:  fields[] = SOMENTE as... */
 
@@ -165,7 +166,7 @@ export const perfilVertical: PerfilLayout<PaginaLida> = {
 };
 
 /** Adicionar um layout novo = acrescentar um objeto aqui. */
-export const perfisHolerite: PerfilLayout<PaginaLida>[] = [perfilVertical];
+export const perfisHolerite: PerfilLayout<PaginaLida>[] = [perfilVertical, perfilReciboPagamento];
 
 // ---------- Extrator ----------
 

@@ -150,6 +150,25 @@ mesma linha física.
   `perfilVertical.ler` sem o número da página nos testes novos. O compilador
   pegou os dois na hora — nenhum chegou a rodar errado.
 
+### Dia 7 — perfil do Recibo de Pagamento (`payroll-04`)
+
+Layout com Proventos e Descontos lado a lado, escaneado, dois recibos por página.
+
+**Onde o agente errou (continuação):**
+
+- **Quase cortei a coluna no lugar errado.** O enunciado diz "ache a coluna onde
+  começa Descontos", e a leitura natural é cortar no índice da palavra
+  "Descontos" do cabeçalho. Só que "Descontos" é **centralizada** sobre a coluna:
+  medindo o texto reconstruído, ela cai na coluna 93, enquanto as descrições da
+  direita (INSS MES etc.) começam na 68 — cortar em 93 jogaria metade dos
+  descontos para o lado dos proventos. Corrigi antes de escrever, medindo as
+  posições no OCR real: o corte certo é o **segundo `Descrição`** do
+  sub-cabeçalho. Sem medir, teria escrito o parser errado e passado nos meus
+  próprios olhos.
+- Antes disso, o OCR não rodava fora do Linux por causa do `\r\n` no TSV
+  (detalhe em `SOLUCAO.md`); sem destravar isso eu não teria como validar este
+  perfil nem os dois próximos.
+
 >>> 10. _(anotar o próximo no momento em que acontecer)_
 
 >>> **O que reescrevi à mão, e por quê:**

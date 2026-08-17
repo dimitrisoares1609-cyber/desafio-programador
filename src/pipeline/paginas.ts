@@ -56,7 +56,9 @@ interface PalavraOcr {
 
 /** Lê o TSV do Tesseract, que traz uma linha por palavra com a confiança. */
 function lerTsv(tsv: string): PalavraOcr[] {
-  const linhas = tsv.split('\n');
+  // \r?\n: em alguns ambientes (Windows) o Tesseract emite TSV com \r\n, e o \r
+  // grudado em "text" quebraria o indexOf do cabeçalho.
+  const linhas = tsv.split(/\r?\n/);
   const cab = linhas[0].split('\t');
   const iConf = cab.indexOf('conf');
   const iTexto = cab.indexOf('text');

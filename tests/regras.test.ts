@@ -256,6 +256,7 @@ test('layout multi-coluna não é reconhecido pelo perfil vertical', () => {
 });
 
 import { perfilBancoDoBrasil } from '../src/extratores/perfis/bancoDoBrasil';
+import { perfilReciboPagamento } from '../src/extratores/perfis/reciboPagamento';
 
 const BB = [
   '   Dia     Entrada Saida     Intervalo 1    Intervalo 2',
@@ -392,4 +393,49 @@ test('par "rótulo: valor" no cabeçalho (antes das verbas) não vira base', () 
   assert.ok(!p.bases.some((b) => b.label.startsWith('Salario Base')));
   assert.deepEqual(p.fields.map((f) => f.label), ['Dias Trabalhados']);
   assert.deepEqual(p.bases, [{ label: 'Base INSS', value: '1.967,07' }]);
+});
+
+// ---------- Tarefa 2: Recibo de Pagamento com Proventos/Descontos lado a lado ----------
+
+// esq preenche a coluna da esquerda até a col 45; a de Descontos começa exatamente ali.
+const col = (esq: string, dir: string): string => esq.padEnd(45) + dir;
+const RECIBO = [
+  '            Recibo de Pagamento',
+  '   Referencia   SETEMBRO/2019   MENSAL   1/1',
+  col('        Proventos', 'Descontos'),
+  col('   Descrição      Qtde   Valor', 'Descrição      Qtde   Valor'),
+  col('   SALARIO                953,36', 'INSS MES              200,43'),
+  col('   DSR COMISSAO          173,68', 'VALE REFEICAO          6,00'),
+  col('   TOTAL DE PROVENTOS  2.227,04', 'TOTAL DE DESCONTOS   211,43'),
+  col('', 'LIQUIDO A RECEBER    2.015,61'),
+  '   Salario Base       Base INSS        FGTS Mes',
+  '      1.300,00         2.227,04         178,16',
+].join('\n');
+
+test('recibo: reconhece as duas tabelas lado a lado; layout vertical não', () => {
+  assert.ok(perfilReciboPagamento.reconhece(RECIBO) > 0.35);
+  // uma tabela só (Proventos/Descontos como colunas de valor) não é este layout
+  assert.equal(
+    perfilReciboPagamento.reconhece('DEMONSTRATIVO\nCod Descricao Proventos Descontos\n0105 Dias 1,00'),
+    0,
+  );
+});
+
+test('recibo: corta na coluna de Descontos e soma proventos depois descontos', () => {
+  const p = perfilReciboPagamento.ler(RECIBO, 1);
+  assert.equal(p.month, '09');
+  assert.equal(p.year, '2019');
+  assert.deepEqual(p.fields.map((f) => f.label), ['SALARIO', 'DSR COMISSAO', 'INSS MES', 'VALE REFEICAO']);
+  assert.deepEqual(p.fields.map((f) => f.value), ['953,36', '173,68', '200,43', '6,00']);
+  // totais e o rodapé de bases vão para bases[], não para fields[]
+  assert.ok(!p.fields.some((f) => /total/i.test(f.label)));
+  assert.deepEqual(p.bases.map((b) => b.label + '=' + b.value), [
+    'TOTAL DE PROVENTOS=2.227,04', 'TOTAL DE DESCONTOS=211,43', 'LIQUIDO A RECEBER=2.015,61',
+    'Salario Base=1.300,00', 'Base INSS=2.227,04', 'FGTS Mes=178,16',
+  ]);
+});
+
+test('recibo: dois recibos na mesma página — lê só o primeiro', () => {
+  const p = perfilReciboPagamento.ler(RECIBO + '\n' + RECIBO, 1);
+  assert.deepEqual(p.fields.map((f) => f.label), ['SALARIO', 'DSR COMISSAO', 'INSS MES', 'VALE REFEICAO']);
 });
