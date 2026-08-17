@@ -453,3 +453,22 @@ test('cartão em que o OCR só devolve "?" é recusado, não inventado', () => {
   ].join('\n');
   assert.throws(() => extrairCartaoPonto(pag(ilegivel)), ErroLayoutDesconhecido);
 });
+
+// ---------- Tarefa 4: ficha financeira multi-mês (payroll-01) ----------
+
+test('ficha financeira com vários meses por página é recusada, não colapsada', () => {
+  // Três colunas (RENDIMENTOS/DESCONTOS/RESULTADOS) e um bloco por mês.
+  const ficha = [
+    'FICHA FINANCEIRA - PERIODO: 2017/04 a 2025/03',
+    '   R E N D I M E N T O S        DESCONTOS          RESULTADOS',
+    'Folha Normal   Mes: abr-17',
+    '   REMUNERACAO MES      969,73   290 VA Func   30,67  BASE INSS   1.260,65',
+    '   DIAS/HORAS TRAB      146,67   491 Seguro     2,40  BASE IRF      780,62',
+    '40 Reembolso VR         360,00   499 Vale Ref  36,00  BASE FGTS   1.260,65',
+    '91 Hr Adic Pericul      290,92   511 INSS     100,85  VALOR FGTS    100,85',
+    '   TOT.RENDIMENTOS    1.620,65   561 IRF        0,00  LIQUIDO     1.392,55',
+    'Folha Normal   Mes: mai-17',
+    '   REMUNERACAO MES    1.454,59   290 VA Func   46,00  BASE INSS   2.064,79',
+  ].join('\n');
+  assert.throws(() => extrairHolerite(pag(ficha)), ErroLayoutDesconhecido);
+});

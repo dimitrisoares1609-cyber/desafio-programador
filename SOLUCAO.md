@@ -324,6 +324,28 @@ honestidade: inventar horários a partir de tinta borrada seria o pior resultado
 possível neste domínio. O mês manuscrito no cabeçalho não é sequer tentado — o
 Tesseract não lê manuscrito, e chutar "abril" seria fabricar competência.
 
+### Ficha financeira multi-mês (payroll-01) — recusa por contrato
+
+Bônus do enunciado. A ficha traz três colunas lado a lado (RENDIMENTOS,
+DESCONTOS, RESULTADOS) e, dentro delas, **um bloco por mês** ("Folha Normal /
+Mês: abr-17"): são ~19 competências por página do PDF (período 2017/04 a
+2025/03). Cortar as três colunas é a parte fácil e dá para fazer. O que trava é
+o **contrato de saída**: `PaginaHolerite` tem um único `year`/`month`, e o
+`extrairHolerite` produz **uma entrada por página do PDF**. Encaixar 19 meses aí
+só teria dois caminhos, ambos ruins:
+
+1. **Colapsar tudo num `fields[]` só** — "REMUNERAÇÃO MES" apareceria 19 vezes
+   sem dizer de qual mês. Isso é exatamente o dado plausível e errado que o
+   projeto recusa em toda parte.
+2. **Fazer um perfil devolver N entradas por página** — mudaria a assinatura de
+   `ler()` e o laço do `extrairHolerite`, quebrando a invariante central
+   ("adicionar layout = só criar um perfil, nada mais muda") que o enunciado
+   pede para manter, e ainda esbarraria na montagem da tabela e nos avisos, que
+   assumem uma competência por página.
+
+Então fica recusado de propósito, e a decisão é o próprio ponto: honrar o
+contrato e a arquitetura vale mais do que arrancar este exemplo à força.
+
 ## Testes
 
 Quinze testes, escolhidos por um critério só: **cada um cobre um caso em que a
