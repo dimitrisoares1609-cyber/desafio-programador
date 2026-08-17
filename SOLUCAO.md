@@ -242,8 +242,8 @@ confirma a aposta na arquitetura de perfis.
 | `time-card-03` | Cartão de Ponto tabular (sufixos `c`/`d`) | **nao** | genérico | saída incompleta |
 | `time-card-04` | Cartão mecânico, mês manuscrito, quinzenas | **nao** | — | recusado |
 | `payroll-01` | Ficha financeira multi-coluna | sim | — | recusado de propósito |
-| `payroll-02` | Declaração de Remuneração (MÊS + ACERTO) | sim | genérico | verbas ok, bases pendentes |
-| `payroll-03` | Demonstrativo de Pagamento Mensal | sim | genérico | verbas ok, bases pendentes |
+| `payroll-02` | Declaração de Remuneração (MÊS + ACERTO) | sim | genérico | lê correto (verbas + bases) |
+| `payroll-03` | Demonstrativo de Pagamento Mensal | sim | genérico | lê correto (verbas + bases) |
 | `payroll-04` | Recibo de Pagamento, dois por página | **só o carimbo** | genérico | saída não validada |
 
 Cinco dos oito são escaneados ou quase — o enunciado avisou, e é mesmo assim
@@ -276,6 +276,17 @@ são o ponto de partida, não a resposta final. Dois casos já conhecidos:
   por linha física. O perfil vertical pontuava 0,65 e colava o nome de uma
   verba no valor de outra. Hoje é recusado por uma guarda explícita — uma
   entrega vazia e honesta em vez de 58 linhas de lixo plausível.
+
+### Bases no rodapé com vários pares por linha (payroll-02 e payroll-03)
+
+As bases e totais ficam num rodapé onde a mesma linha física traz dois ou três
+pares `rótulo: valor` (ex.: `Base I.N.S.S. : 1.967,07   F.G.T.S. do Mês : 157,37`).
+O parser lia um valor por linha, então `payroll-02` devolvia zero bases e
+`payroll-03` uma só (com o rótulo poluído). A função `separarPares` quebra todos
+os pares da linha; o rótulo terminado em `:` é o que distingue rodapé de verba
+(a tabela de verbas não usa dois pontos antes do valor). As linhas `Total` e
+`Líquido`, que não têm dois pontos, entram como bases só depois que a tabela de
+verbas começou — nunca no cabeçalho.
 
 ## Testes
 

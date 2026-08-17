@@ -3,3 +3,5 @@ dist/
 dados/
 .env
 *.log
+# PDFs de exemplo vêm à parte (não versionados); só as planilhas geradas ficam no repo.
+exemplos/*.pdf

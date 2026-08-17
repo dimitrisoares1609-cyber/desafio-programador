@@ -146,7 +146,7 @@ test('cor mais grave ganha, mas nenhum motivo é perdido', () => {
 // ---------- Extração ----------
 
 import { extrairCartaoPonto } from '../src/extratores/cartaoPonto';
-import { extrairHolerite } from '../src/extratores/holerite';
+import { extrairHolerite, separarPares } from '../src/extratores/holerite';
 import { ErroLayoutDesconhecido } from '../src/extratores/layouts';
 import type { PaginaTexto } from '../src/pipeline/paginas';
 
@@ -338,4 +338,58 @@ test('data no meio da linha é cabeçalho, não um dia', () => {
   assert.equal(dias[0].date_raw, '16/12/2019');
   assert.deepEqual(dias[0].punches.map((p) => p.time_hhmm), ['07:00', '12:00', '13:00', '17:00']);
   assert.deepEqual(dias[2].punches, []);
+});
+
+// ---------- Tarefa 1: bases no rodapé com vários pares por linha ----------
+
+test('separarPares quebra os vários "rótulo: valor" da mesma linha física', () => {
+  const pares = separarPares('Base I.N.S.S. :   1.967,07     F.G.T.S. do Mes :   157,37');
+  assert.deepEqual(pares, [
+    { label: 'Base I.N.S.S', value: '1.967,07' },
+    { label: 'F.G.T.S. do Mes', value: '157,37' },
+  ]);
+});
+
+test('rodapé de 3 pares por linha vira 3 bases, sem poluir as verbas (payroll-02)', () => {
+  const p = perfilVertical.ler([
+    'Verba Nome Base Valor',
+    '010 VENCIMENTO PADRAO-VP        3.059,94',
+    'Remuneracao Funcao Vl. Ref.:  5.017,04 Proventos Retidos:  0,00 Proventos Bruto:  6.188,63',
+  ].join('\n'), 1);
+  assert.deepEqual(p.fields.map((f) => f.label), ['VENCIMENTO PADRAO-VP']);
+  assert.deepEqual(p.bases, [
+    { label: 'Remuneracao Funcao Vl. Ref', value: '5.017,04' },
+    { label: 'Proventos Retidos', value: '0,00' },
+    { label: 'Proventos Bruto', value: '6.188,63' },
+  ]);
+});
+
+test('linha com dois pares não vira uma base poluída, e Total/Líquido entram (payroll-03)', () => {
+  const p = perfilVertical.ler([
+    'Cod Descricao Unidade Proventos Descontos',
+    '0105 Dias Trabalhados   30,00   1.678,61',
+    'Total                    1.967,07   859,46',
+    'Liquido                  1.107,61',
+    'Base I.N.S.S. :  1.967,07   F.G.T.S. do Mes :  157,37',
+    'Dep. I.R.R.F. :  0,00       Base FGTS:  1.967,07',
+  ].join('\n'), 1);
+  assert.deepEqual(p.bases.map((b) => b.label + '=' + b.value), [
+    'Total=1.967,07', 'Total=859,46', 'Liquido=1.107,61',
+    'Base I.N.S.S=1.967,07', 'F.G.T.S. do Mes=157,37',
+    'Dep. I.R.R.F=0,00', 'Base FGTS=1.967,07',
+  ]);
+  // A regressão que motivou a tarefa: a linha "Dep. IRRF / Base FGTS" era UMA base só.
+  assert.ok(!p.bases.some((b) => b.label.includes('Dep') && b.label.includes('Base FGTS')));
+});
+
+test('par "rótulo: valor" no cabeçalho (antes das verbas) não vira base', () => {
+  const p = perfilVertical.ler([
+    'DEMONSTRATIVO DE PAGAMENTO',
+    'Salario Base :  1.678,61   Grupo : F',
+    '0105 Dias Trabalhados   30,00   1.678,61',
+    'Base INSS   1.967,07',
+  ].join('\n'), 1);
+  assert.ok(!p.bases.some((b) => b.label.startsWith('Salario Base')));
+  assert.deepEqual(p.fields.map((f) => f.label), ['Dias Trabalhados']);
+  assert.deepEqual(p.bases, [{ label: 'Base INSS', value: '1.967,07' }]);
 });

@@ -45,6 +45,30 @@ export function lerCompetencia(texto: string): { year: string; month: string } {
   return { month: mesValido(mes) ? mes : '??', year: m[2] };
 }
 
+/** Separa todos os pares "rótulo: valor" de uma mesma linha do rodapé de bases. */
+export function separarPares(linha: string): BaseTotal[] {
+  // Um rótulo começa por letra, vai até os dois pontos, e é seguido de um valor.
+  const re = new RegExp('([A-Za-zÀ-ÿ][^:]*?)\\s*:\\s*(' + RE_DINHEIRO.source + ')', 'g');
+  const pares: BaseTotal[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(linha))) {
+    const label = m[1].replace(/[.:\s]+$/, '').trim();
+    if (label) pares.push({ label, value: m[2] });
+  }
+  return pares;
+}
+
+/** Lê uma linha da seção de bases: pares rotulados, ou rótulo seguido de valores soltos. */
+function lerBasesDaLinha(linha: string, pares: BaseTotal[]): BaseTotal[] {
+  if (pares.length > 0) return pares;
+  const valores = linha.match(new RegExp(RE_DINHEIRO.source, 'g')) ?? [];
+  const primeiro = valores[0];
+  if (!primeiro) return [];
+  const label = linha.slice(0, linha.indexOf(primeiro)).replace(/[.:\s]+$/, '').trim();
+  if (!label) return [];
+  return valores.map((v) => ({ label, value: v }));
+}
+
 // ---------- Perfil genérico ----------
 
 /** Demonstrativo vertical: tabela de verbas linha a linha, seção de bases abaixo. */
@@ -90,17 +114,24 @@ export const perfilVertical: PerfilLayout<PaginaLida> = {
       // A fronteira é encontrada uma vez e não volta atrás: depois que a seção de...
       if (!naSecaoDeBases && RE_INICIO_BASES.test(limpa)) naSecaoDeBases = true;
 
+      // Rodapé de bases: pares "rótulo: valor" na mesma linha, ou a linha de Total/Líquido.
+      // Só vale depois que a tabela de verbas começou (fields > 0), nunca no cabeçalho.
+      const pares = separarPares(limpa);
+      const territorioRodape = fields.length > 0;
+      const linhaDeTotais =
+        territorioRodape && /^(total|l[íi]q[uü]ido)\b/i.test(limpa) && RE_DINHEIRO.test(limpa);
+
+      if (naSecaoDeBases || (territorioRodape && pares.length > 0) || linhaDeTotais) {
+        for (const b of lerBasesDaLinha(limpa, pares)) bases.push(b);
+        continue;
+      }
+
       const dinheiro = limpa.match(RE_DINHEIRO_FIM);
       if (!dinheiro) continue;
       const value = dinheiro[0].replace(/\s*[DC]\s*$/, '').trim();
 
       const antes = limpa.slice(0, limpa.length - dinheiro[0].length).trim();
       if (!antes) continue;
-
-      if (naSecaoDeBases) {
-        bases.push({ label: antes.replace(/[.:\s]+$/, ''), value });
-        continue;
-      }
 
       // Código da verba: dígitos isolados no começo da linha.
       const comCodigo = antes.match(/^(\d{2,6})\s+(.*)$/);

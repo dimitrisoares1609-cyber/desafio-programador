@@ -131,6 +131,25 @@ Rodei o OCR contra os escaneados pela primeira vez. Até aqui o caminho
    parear entrada e saída, e lia zero batidas no documento para o qual tinha
    sido escrito. Refeito para parear pela ordem dos horários na linha.
 
+### Dia 6 — bases dos holerites no rodapé (`payroll-02`, `payroll-03`)
+
+Completar `bases[]` quando o rodapé traz dois ou três pares `rótulo: valor` na
+mesma linha física.
+
+**Onde o agente errou (continuação):**
+
+- **Quase travei a fronteira das bases, o que quebraria o `payroll-02`.** A
+  primeira ideia foi estender a marca de "início das bases" e mandar tudo depois
+  para `bases[]`. Só que o `payroll-02` tem dois demonstrativos na MESMA página
+  (MÊS e ACERTO); com a fronteira travada, as verbas do segundo bloco virariam
+  base. Troquei por classificar linha a linha — pares `rótulo: valor` só contam
+  depois que a tabela de verbas começou —, sem travar nada. Percebi rodando o
+  extrator na página real e vendo que o bloco ACERTO sumiria das verbas.
+- **Dois erros de tipo bobos, pegos pelo `tsc`.** `valores[0]` podia ser
+  `undefined` (resolvi com uma const e checagem antes de usar) e chamei
+  `perfilVertical.ler` sem o número da página nos testes novos. O compilador
+  pegou os dois na hora — nenhum chegou a rodar errado.
+
 >>> 10. _(anotar o próximo no momento em que acontecer)_
 
 >>> **O que reescrevi à mão, e por quê:**
