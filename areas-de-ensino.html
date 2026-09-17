@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Áreas de ensino do Instituto Horizonte: graduação, pós-graduação, cursos técnicos e extensão.">
+  <meta name="author" content="Instituto Horizonte">
+  <title>Áreas de Ensino | Instituto Horizonte</title>
+
+  <link rel="icon" type="image/svg+xml" href="img/logo-horizonte.svg">
+
+  <!-- Bootstrap 5 (CSS) via CDN -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous">
+
+  <!-- Estilos personalizados do portal (CSS3) -->
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<body>
+  <a href="#conteudo" class="visually-hidden-focusable btn btn-ih m-2">Ir para o conteúdo principal</a>
+
+  <!-- ======================================================================
+       RF01 - Mesma barra de navegação da página inicial (consistência visual)
+       ====================================================================== -->
+  <header>
+    <nav class="navbar navbar-expand-lg fixed-top ih-navbar" aria-label="Menu principal">
+      <div class="container">
+
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+          <img src="img/logo-horizonte.svg" alt="Logotipo do Instituto Horizonte">
+          <span>Instituto Horizonte</span>
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal" aria-expanded="false"
+                aria-label="Abrir ou fechar o menu de navegação">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item"><a class="nav-link" href="index.html#inicio">Início</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html#cursos">Cursos</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html#noticias">Notícias</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html#contato">Contato</a></li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle active" href="#" id="menuAreas" role="button"
+                 data-bs-toggle="dropdown" aria-expanded="false">
+                Áreas de Ensino
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuAreas">
+                <li><a class="dropdown-item" href="#graduacao">Graduação</a></li>
+                <li><a class="dropdown-item" href="#pos-graduacao">Pós-graduação</a></li>
+                <li><a class="dropdown-item" href="#tecnico">Cursos Técnicos</a></li>
+                <li><a class="dropdown-item" href="#extensao">Extensão e Cursos Livres</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="index.html#consulta">Consultar valores</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+              <a class="btn btn-ih px-3" href="index.html#contato">Inscreva-se</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+
+    <!-- Cabeçalho da página -->
+    <section class="ih-hero pt-5 mt-5">
+      <div class="container py-5">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-8">
+            <span class="secao-rotulo">Ensino</span>
+            <h1 class="mb-3">Áreas de Ensino</h1>
+            <p class="lead mb-0">
+              Quatro frentes de formação que atendem desde a primeira graduação até a
+              atualização profissional de quem já está no mercado.
+            </p>
+          </div>
+          <div class="col-lg-4 text-center d-none d-lg-block">
+            <img src="img/logo-horizonte.svg" alt="" width="128" height="128" class="opacity-75">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Graduação -->
+    <section id="graduacao" class="py-5">
+      <div class="container py-3">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-5">
+            <span class="secao-rotulo">Área 01</span>
+            <h2 class="mb-3">Graduação</h2>
+            <p>
+              Bacharelados e cursos tecnólogos reconhecidos pelo MEC, nas modalidades
+              presencial, híbrida e a distância. O ingresso acontece por vestibular
+              agendado, nota do ENEM ou transferência.
+            </p>
+            <a href="index.html#cursos" class="btn btn-ih">Ver cursos de graduação</a>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <div class="card ih-card h-100">
+                  <div class="card-body">
+                    <span class="ih-etiqueta">Bacharelado</span>
+                    <h3 class="h6 mt-2">Saúde</h3>
+                    <p class="card-text small mb-0">Enfermagem, Nutrição e Fisioterapia.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="card ih-card h-100">
+                  <div class="card-body">
+                    <span class="ih-etiqueta">Bacharelado</span>
+                    <h3 class="h6 mt-2">Negócios</h3>
+                    <p class="card-text small mb-0">Administração, Contábeis e Marketing.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="card ih-card h-100">
+                  <div class="card-body">
+                    <span class="ih-etiqueta">Tecnólogo</span>
+                    <h3 class="h6 mt-2">Tecnologia</h3>
+                    <p class="card-text small mb-0">Sistemas, Redes e Design Digital.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="card ih-card h-100">
+                  <div class="card-body">
+                    <span class="ih-etiqueta">Bacharelado</span>
+                    <h3 class="h6 mt-2">Engenharias</h3>
+                    <p class="card-text small mb-0">Civil, Produção e Elétrica.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pós-graduação -->
+    <section id="pos-graduacao" class="py-5 secao-clara">
+      <div class="container py-3">
+        <div class="row g-4">
+          <div class="col-lg-5">
+            <span class="secao-rotulo">Área 02</span>
+            <h2 class="mb-3">Pós-graduação</h2>
+            <p class="mb-0">
+              Especializações lato sensu com duração de 12 a 18 meses, aulas ao vivo
+              e trabalho de conclusão aplicado à realidade da empresa do aluno.
+            </p>
+          </div>
+
+          <div class="col-lg-7">
+            <div class="ih-tabela table-responsive">
+              <table class="table table-striped align-middle mb-0">
+                <caption class="visually-hidden">Cursos de pós-graduação por área e duração</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Especialização</th>
+                    <th scope="col">Formato</th>
+                    <th scope="col">Duração</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row" class="fw-semibold">Gestão de Projetos</th>
+                    <td>EAD ao vivo</td>
+                    <td>12 meses</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="fw-semibold">Engenharia de Software</th>
+                    <td>Híbrido</td>
+                    <td>18 meses</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="fw-semibold">Saúde Coletiva</th>
+                    <td>Presencial</td>
+                    <td>15 meses</td>
+                  </tr>
+                  <tr>
+                    <th scope="row" class="fw-semibold">Direito Digital</th>
+                    <td>EAD ao vivo</td>
+                    <td>12 meses</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cursos Técnicos -->
+    <section id="tecnico" class="py-5">
+      <div class="container py-3">
+        <span class="secao-rotulo">Área 03</span>
+        <h2 class="mb-3">Cursos Técnicos</h2>
+        <p class="mb-4">
+          Formação de nível médio técnico com estágio incluído, pensada para quem
+          quer entrar no mercado em menos de dois anos.
+        </p>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-3">
+            <div class="card ih-card h-100">
+              <div class="card-body">
+                <h3 class="h6">Técnico em Enfermagem</h3>
+                <p class="card-text small mb-0">1.800 horas &middot; presencial &middot; noturno</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card ih-card h-100">
+              <div class="card-body">
+                <h3 class="h6">Técnico em Informática</h3>
+                <p class="card-text small mb-0">1.200 horas &middot; híbrido &middot; vespertino</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card ih-card h-100">
+              <div class="card-body">
+                <h3 class="h6">Técnico em Edificações</h3>
+                <p class="card-text small mb-0">1.400 horas &middot; presencial &middot; matutino</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <div class="card ih-card h-100">
+              <div class="card-body">
+                <h3 class="h6">Técnico em Administração</h3>
+                <p class="card-text small mb-0">1.000 horas &middot; EAD &middot; flexível</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Extensão e Cursos Livres -->
+    <section id="extensao" class="py-5 secao-clara">
+      <div class="container py-3">
+        <div class="row g-4 align-items-start">
+          <div class="col-lg-5">
+            <span class="secao-rotulo">Área 04</span>
+            <h2 class="mb-3">Extensão e Cursos Livres</h2>
+            <p class="mb-0">
+              Cursos curtos, gratuitos para a comunidade em parte da grade, com
+              certificado digital emitido ao final. As dúvidas mais comuns estão ao lado.
+            </p>
+          </div>
+
+          <div class="col-lg-7">
+            <!-- Componente Accordion do Bootstrap -->
+            <div class="accordion" id="duvidasExtensao">
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="duvida1">
+                  <button class="accordion-button" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#resposta1"
+                          aria-expanded="true" aria-controls="resposta1">
+                    Preciso ser aluno do Instituto para participar?
+                  </button>
+                </h3>
+                <div id="resposta1" class="accordion-collapse collapse show"
+                     aria-labelledby="duvida1" data-bs-parent="#duvidasExtensao">
+                  <div class="accordion-body">
+                    Não. Os cursos de extensão são abertos à comunidade, bastando a
+                    inscrição pelo formulário de contato da página inicial.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="duvida2">
+                  <button class="accordion-button collapsed" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#resposta2"
+                          aria-expanded="false" aria-controls="resposta2">
+                    O certificado tem validade para horas complementares?
+                  </button>
+                </h3>
+                <div id="resposta2" class="accordion-collapse collapse"
+                     aria-labelledby="duvida2" data-bs-parent="#duvidasExtensao">
+                  <div class="accordion-body">
+                    Sim. O certificado digital traz a carga horária e o código de
+                    verificação aceito como atividade complementar nos cursos de graduação.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="duvida3">
+                  <button class="accordion-button collapsed" type="button"
+                          data-bs-toggle="collapse" data-bs-target="#resposta3"
+                          aria-expanded="false" aria-controls="resposta3">
+                    Existe curso em horário noturno?
+                  </button>
+                </h3>
+                <div id="resposta3" class="accordion-collapse collapse"
+                     aria-labelledby="duvida3" data-bs-parent="#duvidasExtensao">
+                  <div class="accordion-body">
+                    A maior parte das turmas livres acontece entre 19h e 22h, e todas
+                    as aulas ficam gravadas por 30 dias.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chamada final -->
+    <section class="py-5">
+      <div class="container py-3 text-center">
+        <h2 class="mb-3">Ainda em dúvida sobre qual área seguir?</h2>
+        <p class="mb-4">Converse com a orientação educacional e receba uma recomendação personalizada.</p>
+        <a href="index.html#contato" class="btn btn-ih btn-lg px-4">Falar com um consultor</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       RF08 - Rodapé institucional (idêntico ao da página inicial)
+       ====================================================================== -->
+  <footer class="ih-rodape pt-5">
+    <div class="container">
+      <div class="row g-4 pb-4">
+
+        <div class="col-lg-4">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <img src="img/logo-horizonte.svg" alt="" width="36" height="36">
+            <span class="h5 mb-0 text-white">Instituto Horizonte</span>
+          </div>
+          <p class="mb-0">
+            Instituição de ensino superior credenciada pelo MEC, dedicada à formação
+            acadêmica, tecnológica e profissional desde 1994.
+          </p>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+          <h2>Endereço</h2>
+          <address class="mb-0">
+            Av. das Nações, 1420<br>
+            Centro &middot; Belo Horizonte/MG<br>
+            CEP 30110-000
+          </address>
+        </div>
+
+        <div class="col-sm-6 col-lg-2">
+          <h2>Contato</h2>
+          <ul class="list-unstyled mb-0">
+            <li><a href="tel:+553133334000">(31) 3333-4000</a></li>
+            <li><a href="mailto:contato@institutohorizonte.edu.br">contato@institutohorizonte.edu.br</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3">
+          <h2>Redes sociais</h2>
+          <div class="d-flex gap-2">
+            <a class="ih-social" href="index.html" aria-label="Instagram do Instituto Horizonte">IG</a>
+            <a class="ih-social" href="index.html" aria-label="Facebook do Instituto Horizonte">FB</a>
+            <a class="ih-social" href="index.html" aria-label="LinkedIn do Instituto Horizonte">IN</a>
+            <a class="ih-social" href="index.html" aria-label="YouTube do Instituto Horizonte">YT</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ih-copyright py-3 text-center">
+        &copy; 2026 Instituto Horizonte. Todos os direitos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 (JS bundle: navbar colapsável, dropdown e accordion) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+/* ==========================================================================
+   Instituto Horizonte - Portal Institucional
+   Estilos personalizados (CSS3) aplicados sobre o Bootstrap 5.
+   A folha não redefine o framework: apenas estende cores, espaçamentos
+   e estados visuais que o Bootstrap não cobre.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Tokens de cor e tipografia
+   -------------------------------------------------------------------------- */
+:root {
+  --ih-azul: #1d3f8f;
+  --ih-azul-claro: #3f7fd4;
+  --ih-verde: #0d6b62;
+  --ih-verde-claro: #2fa89a;
+  --ih-ambar: #f5b942;
+  --ih-tinta: #14203a;
+  --ih-texto: #3c465c;
+  --ih-superficie: #f5f7fb;
+  --ih-borda: #e2e7f0;
+  --ih-sombra: 0 0.75rem 2rem rgba(20, 32, 58, 0.08);
+  --ih-sombra-forte: 0 1.25rem 2.5rem rgba(20, 32, 58, 0.16);
+  --ih-raio: 1rem;
+}
+
+body {
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--ih-texto);
+  background-color: #ffffff;
+  /* Compensa a navbar fixa no topo ao rolar até as âncoras. */
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6,
+.navbar-brand {
+  color: var(--ih-tinta);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+/* Cada seção ancorada ganha folga para não ficar sob a navbar fixa. */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Rótulo curto que abre cada seção. */
+.secao-rotulo {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 2rem;
+  background-color: rgba(63, 127, 212, 0.12);
+  color: var(--ih-azul);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.secao-clara {
+  background-color: var(--ih-superficie);
+}
+
+/* --------------------------------------------------------------------------
+   2. Barra de navegação (RF01)
+   -------------------------------------------------------------------------- */
+.ih-navbar {
+  background-color: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--ih-borda);
+  backdrop-filter: blur(8px);
+}
+
+.ih-navbar .navbar-brand img {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.ih-navbar .nav-link {
+  color: var(--ih-texto);
+  font-weight: 600;
+  padding-inline: 0.9rem;
+  border-radius: 0.5rem;
+}
+
+.ih-navbar .nav-link:hover,
+.ih-navbar .nav-link:focus,
+.ih-navbar .nav-link.active {
+  color: var(--ih-azul);
+  background-color: rgba(63, 127, 212, 0.1);
+}
+
+.ih-navbar .dropdown-item:active {
+  background-color: var(--ih-azul);
+}
+
+/* --------------------------------------------------------------------------
+   3. Seção principal / Hero (RF02)
+   -------------------------------------------------------------------------- */
+.ih-hero {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(47, 168, 154, 0.18), transparent 45%),
+    radial-gradient(circle at 88% 8%, rgba(63, 127, 212, 0.22), transparent 42%),
+    linear-gradient(180deg, #ffffff 0%, var(--ih-superficie) 100%);
+  border-bottom: 1px solid var(--ih-borda);
+}
+
+.ih-hero h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.12;
+}
+
+.ih-hero .lead {
+  max-width: 34rem;
+}
+
+.ih-hero img {
+  filter: drop-shadow(var(--ih-sombra-forte));
+}
+
+/* Selos de credibilidade abaixo da chamada principal. */
+.ih-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ih-tinta);
+}
+
+.ih-selo::before {
+  content: "";
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background-color: var(--ih-verde-claro);
+}
+
+/* --------------------------------------------------------------------------
+   4. Botoes
+   -------------------------------------------------------------------------- */
+.btn-ih {
+  background-color: var(--ih-azul);
+  border-color: var(--ih-azul);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.btn-ih:hover,
+.btn-ih:focus {
+  background-color: #17337a;
+  border-color: #17337a;
+  color: #ffffff;
+}
+
+.btn-outline-ih {
+  border-color: var(--ih-azul);
+  color: var(--ih-azul);
+  font-weight: 600;
+}
+
+.btn-outline-ih:hover,
+.btn-outline-ih:focus {
+  background-color: var(--ih-azul);
+  color: #ffffff;
+}
+
+/* Contorno de foco visível em todos os elementos interativos (usabilidade). */
+a:focus-visible,
+button:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible {
+  outline: 3px solid var(--ih-verde-claro);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   5. Cards de curso (RF03) e de notícia
+   -------------------------------------------------------------------------- */
+.ih-card {
+  border: 1px solid var(--ih-borda);
+  border-radius: var(--ih-raio);
+  box-shadow: var(--ih-sombra);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ih-card:hover,
+.ih-card:focus-within {
+  transform: translateY(-0.35rem);
+  box-shadow: var(--ih-sombra-forte);
+}
+
+/* Altura fixa garante cards alinhados mesmo com textos de tamanhos diferentes. */
+.ih-card img {
+  height: 11rem;
+  object-fit: cover;
+}
+
+.ih-etiqueta {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ih-verde);
+}
+
+/* --------------------------------------------------------------------------
+   6. Indicadores institucionais (RF04)
+   -------------------------------------------------------------------------- */
+.ih-indicadores {
+  background: linear-gradient(135deg, var(--ih-azul) 0%, var(--ih-verde) 100%);
+  color: #ffffff;
+}
+
+.ih-indicador {
+  height: 100%;
+  padding: 1.75rem 1rem;
+  border-radius: var(--ih-raio);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.ih-indicador .ih-numero {
+  display: block;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  line-height: 1;
+  color: #ffffff;
+}
+
+.ih-indicador .ih-legenda {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* --------------------------------------------------------------------------
+   7. Tabela de cursos (RF05)
+   -------------------------------------------------------------------------- */
+.ih-tabela {
+  border-radius: var(--ih-raio);
+  /* Mantem o comportamento de .table-responsive: rola no eixo X em telas
+     estreitas em vez de cortar as colunas. */
+  overflow-x: auto;
+  box-shadow: var(--ih-sombra);
+  border: 1px solid var(--ih-borda);
+  background-color: #ffffff;
+}
+
+.ih-tabela table {
+  margin-bottom: 0;
+}
+
+.ih-tabela thead th {
+  background-color: var(--ih-azul);
+  color: #ffffff;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ih-tabela td,
+.ih-tabela th {
+  padding: 0.9rem 1rem;
+  vertical-align: middle;
+}
+
+/* --------------------------------------------------------------------------
+   8. Formulário de contato (RF06)
+   -------------------------------------------------------------------------- */
+.ih-form {
+  background-color: #ffffff;
+  border: 1px solid var(--ih-borda);
+  border-radius: var(--ih-raio);
+  box-shadow: var(--ih-sombra);
+}
+
+.ih-form .form-label {
+  font-weight: 600;
+  color: var(--ih-tinta);
+}
+
+.ih-form .form-control,
+.ih-form .form-select {
+  border-color: var(--ih-borda);
+  padding: 0.7rem 0.9rem;
+}
+
+.ih-form .form-control:focus,
+.ih-form .form-select:focus {
+  border-color: var(--ih-azul-claro);
+  box-shadow: 0 0 0 0.2rem rgba(63, 127, 212, 0.18);
+}
+
+.ih-contato-item {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.ih-contato-item .ih-icone {
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.75rem;
+  background-color: rgba(47, 168, 154, 0.14);
+  color: var(--ih-verde);
+  font-size: 1.1rem;
+}
+
+/* --------------------------------------------------------------------------
+   9. Rodape (RF08)
+   -------------------------------------------------------------------------- */
+.ih-rodape {
+  background-color: var(--ih-tinta);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.ih-rodape h2,
+.ih-rodape h3 {
+  color: #ffffff;
+  font-size: 1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ih-rodape a {
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  /* E-mails longos quebram em vez de esticar a coluna no celular. */
+  overflow-wrap: anywhere;
+}
+
+.ih-rodape a:hover,
+.ih-rodape a:focus {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.ih-social {
+  display: inline-grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.ih-social:hover,
+.ih-social:focus {
+  background-color: var(--ih-azul-claro);
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.ih-copyright {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.9rem;
+}
+
+/* --------------------------------------------------------------------------
+   10. Ajustes responsivos (RNF01)
+   Bootstrap já entrega a grade fluida; aqui ficam só os retoques que o
+   framework não cobre em telas pequenas.
+   -------------------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+  .ih-navbar .navbar-nav {
+    padding-top: 0.5rem;
+    gap: 0.15rem;
+  }
+
+  .ih-hero {
+    text-align: center;
+  }
+
+  .ih-hero .lead,
+  .ih-hero .ih-acoes {
+    margin-inline: auto;
+  }
+
+  .ih-hero .ih-selos {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .ih-card img {
+    height: 9.5rem;
+  }
+
+  .ih-indicador {
+    padding: 1.25rem 0.75rem;
+  }
+}
+
+/* Respeita quem pede menos animação no sistema operacional. */
+@media (prefers-reduced-motion: reduce) {
+  body {
+    scroll-behavior: auto;
+  }
+
+  .ih-card {
+    transition: none;
+  }
+
+  .ih-card:hover {
+    transform: none;
+  }
+}
+
+/* Impressao: remove fundos pesados e elementos de navegação. */
+@media print {
+  .ih-navbar,
+  .ih-hero img,
+  .btn {
+    display: none !important;
+  }
+
+  body {
+    color: #000000;
+  }
+}
