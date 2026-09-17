@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" role="img" width="640" height="400">
+  <defs>
+    <linearGradient id="g-noticia-3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5a3a0f"/>
+      <stop offset="100%" stop-color="#c08a34"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#g-noticia-3)"/>
+  <circle cx="548" cy="64" r="150" fill="#ffffff" opacity="0.07"/>
+  <circle cx="86" cy="352" r="112" fill="#000000" opacity="0.07"/>
+  <g fill="#ffffff" opacity="0.92">
+    <path d="M320 128 l176 68 -176 68 -176 -68 z"/>
+    <rect x="300" y="248" width="40" height="12" rx="6"/>
+  </g>
+  <path d="M212 232 v56 q108 52 216 0 v-56" fill="none" stroke="#ffffff" stroke-width="12"
+        stroke-linejoin="round" opacity="0.5"/>
+</svg>

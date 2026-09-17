@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Portal institucional do Instituto Horizonte: cursos de graduação e tecnologia, indicadores, notícias e canais de contato.">
+  <meta name="author" content="Instituto Horizonte">
+  <title>Instituto Horizonte | Portal Institucional</title>
+
+  <link rel="icon" type="image/svg+xml" href="img/logo-horizonte.svg">
+
+  <!-- Bootstrap 5 (CSS) via CDN -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous">
+
+  <!-- Estilos personalizados do portal (CSS3) -->
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+
+<body>
+  <!-- Atalho de teclado para quem navega sem mouse -->
+  <a href="#conteudo" class="visually-hidden-focusable btn btn-ih m-2">Ir para o conteúdo principal</a>
+
+  <!-- ======================================================================
+       RF01 - Barra de navegação responsiva
+       ====================================================================== -->
+  <header>
+    <nav class="navbar navbar-expand-lg fixed-top ih-navbar" aria-label="Menu principal">
+      <div class="container">
+
+        <!-- Logotipo + nome da instituição -->
+        <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+          <img src="img/logo-horizonte.svg" alt="Logotipo do Instituto Horizonte">
+          <span>Instituto Horizonte</span>
+        </a>
+
+        <!-- Botao que colapsa o menu em telas pequenas -->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal" aria-expanded="false"
+                aria-label="Abrir ou fechar o menu de navegação">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#inicio">Início</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#cursos">Cursos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#noticias">Notícias</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contato">Contato</a>
+            </li>
+
+            <!-- Menu suspenso exigido pelo RF01 -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="menuAreas" role="button"
+                 data-bs-toggle="dropdown" aria-expanded="false">
+                Áreas de Ensino
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="menuAreas">
+                <li><a class="dropdown-item" href="areas-de-ensino.html#graduacao">Graduação</a></li>
+                <li><a class="dropdown-item" href="areas-de-ensino.html#pos-graduacao">Pós-graduação</a></li>
+                <li><a class="dropdown-item" href="areas-de-ensino.html#tecnico">Cursos Técnicos</a></li>
+                <li><a class="dropdown-item" href="areas-de-ensino.html#extensao">Extensão e Cursos Livres</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="areas-de-ensino.html">Ver todas as áreas</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+              <a class="btn btn-ih px-3" href="#contato">Inscreva-se</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+
+    <!-- ====================================================================
+         RF02 - Seção principal de destaque (Hero)
+         ==================================================================== -->
+    <section id="inicio" class="ih-hero pt-5 mt-5">
+      <div class="container py-5">
+        <div class="row align-items-center g-4 g-lg-5">
+
+          <div class="col-lg-6">
+            <span class="secao-rotulo">Matrículas abertas 2027</span>
+            <h1 class="mb-3">Educação que acompanha o seu horizonte</h1>
+            <p class="lead mb-4">
+              Há 32 anos formando profissionais preparados para o mercado, com corpo docente
+              qualificado, laboratórios modernos e ensino presencial, híbrido ou a distância.
+            </p>
+
+            <div class="ih-acoes d-flex flex-wrap gap-3 mb-4">
+              <a href="#cursos" class="btn btn-ih btn-lg px-4">Conhecer os cursos</a>
+              <a href="#contato" class="btn btn-outline-ih btn-lg px-4">Falar com um consultor</a>
+            </div>
+
+            <div class="ih-selos d-flex flex-wrap gap-4">
+              <span class="ih-selo">Nota 5 no MEC</span>
+              <span class="ih-selo">Bolsas de até 60%</span>
+              <span class="ih-selo">Estágio garantido</span>
+            </div>
+          </div>
+
+          <div class="col-lg-6 text-center">
+            <!-- Imagem ilustrativa do RF02 -->
+            <img src="img/hero-campus.svg"
+                 class="img-fluid"
+                 alt="Ilustração do campus do Instituto Horizonte com estudantes em frente ao prédio principal">
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         RF04 - Indicadores institucionais (Grid System de 12 colunas)
+         ==================================================================== -->
+    <section id="indicadores" class="ih-indicadores py-5">
+      <div class="container py-3">
+        <div class="row text-center mb-4">
+          <div class="col-12">
+            <h2 class="text-white mb-2">O Instituto em números</h2>
+            <p class="mb-0 text-white-50">Dados consolidados do relatório institucional de 2026.</p>
+          </div>
+        </div>
+
+        <!-- 12 colunas divididas em 4 blocos (3 colunas cada) no desktop -->
+        <div class="row g-3 g-md-4 text-center">
+          <div class="col-6 col-lg-3">
+            <div class="ih-indicador">
+              <span class="ih-numero">18.740</span>
+              <span class="ih-legenda">Alunos formados</span>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="ih-indicador">
+              <span class="ih-numero">42</span>
+              <span class="ih-legenda">Cursos oferecidos</span>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="ih-indicador">
+              <span class="ih-numero">310</span>
+              <span class="ih-legenda">Professores</span>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="ih-indicador">
+              <span class="ih-numero">94%</span>
+              <span class="ih-legenda">Satisfação dos alunos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         RF03 - Catálogo de cursos em cards responsivos
+         RF07 - Cada card abre um Modal com os detalhes do curso
+         ==================================================================== -->
+    <section id="cursos" class="py-5">
+      <div class="container py-3">
+        <div class="row mb-4">
+          <div class="col-lg-8">
+            <span class="secao-rotulo">Catálogo</span>
+            <h2 class="mb-2">Cursos oferecidos</h2>
+            <p class="mb-0">
+              Graduações e cursos tecnológicos reconhecidos pelo MEC. Selecione um curso
+              para ver objetivos, carga horária e público-alvo.
+            </p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+
+          <!-- Curso 1 -->
+          <div class="col-md-6 col-lg-4">
+            <article class="card h-100 ih-card">
+              <img src="img/curso-sistemas.svg" class="card-img-top"
+                   alt="Ilustração com símbolos de código representando o curso de Análise e Desenvolvimento de Sistemas">
+              <div class="card-body d-flex flex-column">
+                <span class="ih-etiqueta mb-2">Tecnólogo &middot; EAD</span>
+                <h3 class="card-title h5">Análise e Desenvolvimento de Sistemas</h3>
+                <p class="card-text flex-grow-1">
+                  Formação prática em programação, banco de dados e desenvolvimento web
+                  para atuar em fábricas de software.
+                </p>
+                <button type="button" class="btn btn-outline-ih w-100"
+                        data-bs-toggle="modal" data-bs-target="#modalSistemas">
+                  Ver detalhes
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <!-- Curso 2 -->
+          <div class="col-md-6 col-lg-4">
+            <article class="card h-100 ih-card">
+              <img src="img/curso-enfermagem.svg" class="card-img-top"
+                   alt="Ilustração com cruz da saúde representando o curso de Enfermagem">
+              <div class="card-body d-flex flex-column">
+                <span class="ih-etiqueta mb-2">Bacharelado &middot; Presencial</span>
+                <h3 class="card-title h5">Enfermagem</h3>
+                <p class="card-text flex-grow-1">
+                  Cuidado ao paciente, saúde coletiva e gestão hospitalar com estágio
+                  supervisionado em hospitais conveniados.
+                </p>
+                <button type="button" class="btn btn-outline-ih w-100"
+                        data-bs-toggle="modal" data-bs-target="#modalEnfermagem">
+                  Ver detalhes
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <!-- Curso 3 -->
+          <div class="col-md-6 col-lg-4">
+            <article class="card h-100 ih-card">
+              <img src="img/curso-administracao.svg" class="card-img-top"
+                   alt="Ilustração com gráficos de barras representando o curso de Administração">
+              <div class="card-body d-flex flex-column">
+                <span class="ih-etiqueta mb-2">Bacharelado &middot; Híbrido</span>
+                <h3 class="card-title h5">Administração</h3>
+                <p class="card-text flex-grow-1">
+                  Gestão de pessoas, finanças e estratégia, com trilha opcional de
+                  empreendedorismo e inovação.
+                </p>
+                <button type="button" class="btn btn-outline-ih w-100"
+                        data-bs-toggle="modal" data-bs-target="#modalAdministracao">
+                  Ver detalhes
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <!-- Curso 4 -->
+          <div class="col-md-6 col-lg-4">
+            <article class="card h-100 ih-card">
+              <img src="img/curso-direito.svg" class="card-img-top"
+                   alt="Ilustração com balança da justiça representando o curso de Direito">
+              <div class="card-body d-flex flex-column">
+                <span class="ih-etiqueta mb-2">Bacharelado &middot; Presencial</span>
+                <h3 class="card-title h5">Direito</h3>
+                <p class="card-text flex-grow-1">
+                  Formação jurídica sólida com núcleo de prática e escritório modelo
+                  aberto à comunidade.
+                </p>
+                <button type="button" class="btn btn-outline-ih w-100"
+                        data-bs-toggle="modal" data-bs-target="#modalDireito">
+                  Ver detalhes
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <!-- Curso 5 -->
+          <div class="col-md-6 col-lg-4">
+            <article class="card h-100 ih-card">
+              <img src="img/curso-design.svg" class="card-img-top"
+                   alt="Ilustração com formas e cores representando o curso de Design Digital">
+              <div class="card-body d-flex flex-column">
+                <span class="ih-etiqueta mb-2">Tecnólogo &middot; EAD</span>
+                <h3 class="card-title h5">Design Digital</h3>
+                <p class="card-text flex-grow-1">
+                  Interfaces, identidade visual e experiência do usuário com portfólio
+                  construído ao longo do curso.
+                </p>
+                <button type="button" class="btn btn-outline-ih w-100"
+                        data-bs-toggle="modal" data-bs-target="#modalDesign">
+                  Ver detalhes
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <!-- Curso 6 -->
+          <div class="col-md-6 col-lg-4">
+            <article class="card h-100 ih-card">
+              <img src="img/curso-engenharia.svg" class="card-img-top"
+                   alt="Ilustração com plantas de edifícios representando o curso de Engenharia Civil">
+              <div class="card-body d-flex flex-column">
+                <span class="ih-etiqueta mb-2">Bacharelado &middot; Presencial</span>
+                <h3 class="card-title h5">Engenharia Civil</h3>
+                <p class="card-text flex-grow-1">
+                  Estruturas, saneamento e gestão de obras com laboratório próprio de
+                  materiais de construção.
+                </p>
+                <button type="button" class="btn btn-outline-ih w-100"
+                        data-bs-toggle="modal" data-bs-target="#modalEngenharia">
+                  Ver detalhes
+                </button>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         RF05 - Tabela de consulta dos cursos
+         table-responsive garante rolagem horizontal no celular
+         ==================================================================== -->
+    <section id="consulta" class="py-5 secao-clara">
+      <div class="container py-3">
+        <div class="row mb-4">
+          <div class="col-lg-8">
+            <span class="secao-rotulo">Consulta</span>
+            <h2 class="mb-2">Modalidades, carga horária e investimento</h2>
+            <p class="mb-0">Valores das mensalidades vigentes no primeiro semestre de 2027.</p>
+          </div>
+        </div>
+
+        <div class="ih-tabela table-responsive">
+          <table class="table table-striped table-hover align-middle mb-0">
+            <caption class="visually-hidden">
+              Cursos oferecidos com modalidade, carga horária e investimento mensal
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Nome do curso</th>
+                <th scope="col">Modalidade</th>
+                <th scope="col">Carga horária</th>
+                <th scope="col">Investimento</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" class="fw-semibold">Análise e Desenvolvimento de Sistemas</th>
+                <td>EAD</td>
+                <td>2.400 horas</td>
+                <td>R$ 549,00/mês</td>
+              </tr>
+              <tr>
+                <th scope="row" class="fw-semibold">Enfermagem</th>
+                <td>Presencial</td>
+                <td>4.000 horas</td>
+                <td>R$ 890,00/mês</td>
+              </tr>
+              <tr>
+                <th scope="row" class="fw-semibold">Administração</th>
+                <td>Híbrido</td>
+                <td>3.200 horas</td>
+                <td>R$ 620,00/mês</td>
+              </tr>
+              <tr>
+                <th scope="row" class="fw-semibold">Direito</th>
+                <td>Presencial</td>
+                <td>3.700 horas</td>
+                <td>R$ 980,00/mês</td>
+              </tr>
+              <tr>
+                <th scope="row" class="fw-semibold">Design Digital</th>
+                <td>EAD</td>
+                <td>2.000 horas</td>
+                <td>R$ 499,00/mês</td>
+              </tr>
+              <tr>
+                <th scope="row" class="fw-semibold">Engenharia Civil</th>
+                <td>Presencial</td>
+                <td>3.600 horas</td>
+                <td>R$ 1.120,00/mês</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="small mt-3 mb-0">
+          Descontos de pontualidade e bolsas por desempenho podem reduzir o investimento mensal.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         Seção de notícias (link do RF01)
+         ==================================================================== -->
+    <section id="noticias" class="py-5">
+      <div class="container py-3">
+        <div class="row mb-4 align-items-end">
+          <div class="col-lg-8">
+            <span class="secao-rotulo">Comunicação</span>
+            <h2 class="mb-2">Notícias e avisos</h2>
+            <p class="mb-0">Acompanhe o que acontece no campus e nos canais acadêmicos.</p>
+          </div>
+          <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+            <a href="#contato" class="btn btn-outline-ih">Receber por e-mail</a>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <article class="card h-100 ih-card">
+              <img src="img/noticia-1.svg" class="card-img-top"
+                   alt="Ilustração de um documento de edital aberto">
+              <div class="card-body d-flex flex-column">
+                <p class="ih-etiqueta mb-2">
+                  <time datetime="2026-09-02">02 de setembro de 2026</time>
+                </p>
+                <h3 class="card-title h5">Edital de bolsas do segundo semestre</h3>
+                <p class="card-text flex-grow-1">
+                  Inscrições abertas para bolsas de estudo de até 60% em todos os cursos
+                  de graduação presencial e híbrida.
+                </p>
+                <a href="#contato" class="link-primary fw-semibold text-decoration-none">
+                  Ler a matéria completa
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-6 col-lg-4">
+            <article class="card h-100 ih-card">
+              <img src="img/noticia-2.svg" class="card-img-top"
+                   alt="Ilustração de pessoas reunidas em um evento acadêmico">
+              <div class="card-body d-flex flex-column">
+                <p class="ih-etiqueta mb-2">
+                  <time datetime="2026-08-21">21 de agosto de 2026</time>
+                </p>
+                <h3 class="card-title h5">Semana de Inovação reúne 40 empresas</h3>
+                <p class="card-text flex-grow-1">
+                  Feira de estágio e palestras de mercado acontecem no campus central
+                  com entrada gratuita para a comunidade.
+                </p>
+                <a href="#contato" class="link-primary fw-semibold text-decoration-none">
+                  Ler a matéria completa
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-6 col-lg-4">
+            <article class="card h-100 ih-card">
+              <img src="img/noticia-3.svg" class="card-img-top"
+                   alt="Ilustração de um chapéu de formatura">
+              <div class="card-body d-flex flex-column">
+                <p class="ih-etiqueta mb-2">
+                  <time datetime="2026-07-15">15 de julho de 2026</time>
+                </p>
+                <h3 class="card-title h5">Novo laboratório de redes e nuvem</h3>
+                <p class="card-text flex-grow-1">
+                  Espaço com 40 estações atende os cursos de tecnologia e a formação
+                  continuada de professores.
+                </p>
+                <a href="#contato" class="link-primary fw-semibold text-decoration-none">
+                  Ler a matéria completa
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         RF06 - Formulário de contato
+         ==================================================================== -->
+    <section id="contato" class="py-5 secao-clara">
+      <div class="container py-3">
+        <div class="row g-4 g-lg-5">
+
+          <div class="col-lg-5">
+            <span class="secao-rotulo">Atendimento</span>
+            <h2 class="mb-3">Fale com a instituição</h2>
+            <p>
+              Preencha o formulário e a central de relacionamento responde em até um dia útil.
+              Se preferir, use os canais diretos abaixo.
+            </p>
+
+            <div class="d-flex flex-column gap-3 mt-4">
+              <div class="ih-contato-item">
+                <span class="ih-icone" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/>
+                    <circle cx="12" cy="10" r="2.6"/>
+                  </svg>
+                </span>
+                <div>
+                  <strong class="d-block text-dark">Campus Central</strong>
+                  Av. das Nações, 1420 &middot; Centro &middot; Belo Horizonte/MG
+                </div>
+              </div>
+
+              <div class="ih-contato-item">
+                <span class="ih-icone" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 3h3l2 5-2.5 1.5a12 12 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2.2 2A16 16 0 0 1 4 5.2 2 2 0 0 1 6 3z"/>
+                  </svg>
+                </span>
+                <div>
+                  <strong class="d-block text-dark">Central de atendimento</strong>
+                  <a href="tel:+553133334000" class="text-decoration-none">(31) 3333-4000</a>
+                </div>
+              </div>
+
+              <div class="ih-contato-item">
+                <span class="ih-icone" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="5" width="18" height="14" rx="2"/>
+                    <path d="m3 7 9 6 9-6"/>
+                  </svg>
+                </span>
+                <div>
+                  <strong class="d-block text-dark">E-mail</strong>
+                  <a href="mailto:contato@institutohorizonte.edu.br" class="text-decoration-none">
+                    contato@institutohorizonte.edu.br
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7">
+            <!-- Sem backend: o envio usa o método GET apenas para demonstrar o fluxo. -->
+            <form class="ih-form p-4 p-md-5" action="#contato" method="get" novalidate>
+              <h3 class="h5 mb-4">Formulário de contato</h3>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="nome" class="form-label">Nome completo</label>
+                  <input type="text" class="form-control" id="nome" name="nome"
+                         placeholder="Como devemos chamar você" autocomplete="name" required>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="email" class="form-label">E-mail</label>
+                  <input type="email" class="form-control" id="email" name="email"
+                         placeholder="você@exemplo.com" autocomplete="email" required>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="telefone" class="form-label">Telefone</label>
+                  <input type="tel" class="form-control" id="telefone" name="telefone"
+                         placeholder="(00) 00000-0000" autocomplete="tel">
+                </div>
+
+                <div class="col-md-6">
+                  <label for="curso" class="form-label">Curso de interesse</label>
+                  <select class="form-select" id="curso" name="curso" required>
+                    <option value="" selected>Selecione um curso</option>
+                    <option value="ads">Análise e Desenvolvimento de Sistemas</option>
+                    <option value="enfermagem">Enfermagem</option>
+                    <option value="administracao">Administração</option>
+                    <option value="direito">Direito</option>
+                    <option value="design">Design Digital</option>
+                    <option value="engenharia-civil">Engenharia Civil</option>
+                  </select>
+                </div>
+
+                <div class="col-12">
+                  <label for="mensagem" class="form-label">Mensagem</label>
+                  <textarea class="form-control" id="mensagem" name="mensagem" rows="5"
+                            placeholder="Conte o que você precisa saber" required></textarea>
+                </div>
+
+                <div class="col-12 form-check ms-2">
+                  <input class="form-check-input" type="checkbox" id="aceite" name="aceite">
+                  <label class="form-check-label" for="aceite">
+                    Autorizo o contato da instituição sobre processos seletivos.
+                  </label>
+                </div>
+
+                <div class="col-12 d-grid d-sm-flex gap-2">
+                  <button type="submit" class="btn btn-ih btn-lg px-4">Enviar mensagem</button>
+                  <button type="reset" class="btn btn-outline-ih btn-lg px-4">Limpar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       RF08 - Rodape institucional (presente em todas as páginas)
+       ====================================================================== -->
+  <footer class="ih-rodape pt-5">
+    <div class="container">
+      <div class="row g-4 pb-4">
+
+        <div class="col-lg-4">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <img src="img/logo-horizonte.svg" alt="" width="36" height="36">
+            <span class="h5 mb-0 text-white">Instituto Horizonte</span>
+          </div>
+          <p class="mb-0">
+            Instituição de ensino superior credenciada pelo MEC, dedicada à formação
+            acadêmica, tecnológica e profissional desde 1994.
+          </p>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+          <h2>Endereço</h2>
+          <address class="mb-0">
+            Av. das Nações, 1420<br>
+            Centro &middot; Belo Horizonte/MG<br>
+            CEP 30110-000
+          </address>
+        </div>
+
+        <div class="col-sm-6 col-lg-2">
+          <h2>Contato</h2>
+          <ul class="list-unstyled mb-0">
+            <li><a href="tel:+553133334000">(31) 3333-4000</a></li>
+            <li><a href="mailto:contato@institutohorizonte.edu.br">contato@institutohorizonte.edu.br</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3">
+          <h2>Redes sociais</h2>
+          <div class="d-flex gap-2">
+            <a class="ih-social" href="#inicio" aria-label="Instagram do Instituto Horizonte">IG</a>
+            <a class="ih-social" href="#inicio" aria-label="Facebook do Instituto Horizonte">FB</a>
+            <a class="ih-social" href="#inicio" aria-label="LinkedIn do Instituto Horizonte">IN</a>
+            <a class="ih-social" href="#inicio" aria-label="YouTube do Instituto Horizonte">YT</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="ih-copyright py-3 text-center">
+        &copy; 2026 Instituto Horizonte. Todos os direitos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ======================================================================
+       RF07 - Modais com os detalhes de cada curso
+       ====================================================================== -->
+
+  <!-- Modal: Análise e Desenvolvimento de Sistemas -->
+  <div class="modal fade" id="modalSistemas" tabindex="-1" aria-labelledby="tituloModalSistemas" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="tituloModalSistemas">Análise e Desenvolvimento de Sistemas</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-3">Objetivos</dt>
+            <dd class="col-sm-9">
+              Formar profissionais capazes de analisar requisitos, projetar e programar
+              sistemas web e móveis, aplicando bancos de dados e testes automatizados.
+            </dd>
+
+            <dt class="col-sm-3">Carga horária</dt>
+            <dd class="col-sm-9">2.400 horas distribuídas em 5 semestres.</dd>
+
+            <dt class="col-sm-3">Público-alvo</dt>
+            <dd class="col-sm-9">
+              Concluintes do ensino médio e profissionais de outras áreas em transição para tecnologia.
+            </dd>
+
+            <dt class="col-sm-3">Descrição</dt>
+            <dd class="col-sm-9 mb-0">
+              Curso tecnológico em formato EAD com encontros praticos mensais. Do terceiro
+              semestre em diante o aluno desenvolve um projeto real acompanhado por um mentor.
+            </dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-ih" data-bs-dismiss="modal">Fechar</button>
+          <a href="#contato" class="btn btn-ih" data-bs-dismiss="modal">Quero me inscrever</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Enfermagem -->
+  <div class="modal fade" id="modalEnfermagem" tabindex="-1" aria-labelledby="tituloModalEnfermagem" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="tituloModalEnfermagem">Enfermagem</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-3">Objetivos</dt>
+            <dd class="col-sm-9">
+              Preparar enfermeiros para assistência integral ao paciente, gestão de equipes
+              e atuação em programas de saúde pública.
+            </dd>
+
+            <dt class="col-sm-3">Carga horária</dt>
+            <dd class="col-sm-9">4.000 horas distribuídas em 10 semestres.</dd>
+
+            <dt class="col-sm-3">Público-alvo</dt>
+            <dd class="col-sm-9">
+              Estudantes interessados na área da saúde e técnicos de enfermagem em busca de graduação.
+            </dd>
+
+            <dt class="col-sm-3">Descrição</dt>
+            <dd class="col-sm-9 mb-0">
+              Aulas práticas em laboratórios de simulação realística e estágio supervisionado
+              em hospitais e unidades básicas conveniadas a partir do quinto semestre.
+            </dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-ih" data-bs-dismiss="modal">Fechar</button>
+          <a href="#contato" class="btn btn-ih" data-bs-dismiss="modal">Quero me inscrever</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Administração -->
+  <div class="modal fade" id="modalAdministracao" tabindex="-1" aria-labelledby="tituloModalAdministracao" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="tituloModalAdministracao">Administração</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-3">Objetivos</dt>
+            <dd class="col-sm-9">
+              Desenvolver competências de gestão financeira, de pessoas e de processos,
+              com leitura crítica de cenários econômicos.
+            </dd>
+
+            <dt class="col-sm-3">Carga horária</dt>
+            <dd class="col-sm-9">3.200 horas distribuídas em 8 semestres.</dd>
+
+            <dt class="col-sm-3">Público-alvo</dt>
+            <dd class="col-sm-9">
+              Futuros gestores, empreendedores e profissionais que buscam ascensão em cargos de liderança.
+            </dd>
+
+            <dt class="col-sm-3">Descrição</dt>
+            <dd class="col-sm-9 mb-0">
+              Modelo híbrido com teoria online e encontros presenciais de estudo de caso.
+              Inclui trilha opcional de empreendedorismo com incubadora própria.
+            </dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-ih" data-bs-dismiss="modal">Fechar</button>
+          <a href="#contato" class="btn btn-ih" data-bs-dismiss="modal">Quero me inscrever</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Direito -->
+  <div class="modal fade" id="modalDireito" tabindex="-1" aria-labelledby="tituloModalDireito" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="tituloModalDireito">Direito</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-3">Objetivos</dt>
+            <dd class="col-sm-9">
+              Formar bacharéis com domínio da interpretação jurídica, da argumentação
+              e da prática processual civil, penal e trabalhista.
+            </dd>
+
+            <dt class="col-sm-3">Carga horária</dt>
+            <dd class="col-sm-9">3.700 horas distribuídas em 10 semestres.</dd>
+
+            <dt class="col-sm-3">Público-alvo</dt>
+            <dd class="col-sm-9">
+              Candidatos a carreiras jurídicas, concursos públicos e advocacia privada.
+            </dd>
+
+            <dt class="col-sm-3">Descrição</dt>
+            <dd class="col-sm-9 mb-0">
+              Núcleo de prática jurídica com escritório modelo aberto à comunidade e
+              programa de preparação continuada para o exame da Ordem.
+            </dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-ih" data-bs-dismiss="modal">Fechar</button>
+          <a href="#contato" class="btn btn-ih" data-bs-dismiss="modal">Quero me inscrever</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Design Digital -->
+  <div class="modal fade" id="modalDesign" tabindex="-1" aria-labelledby="tituloModalDesign" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="tituloModalDesign">Design Digital</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-3">Objetivos</dt>
+            <dd class="col-sm-9">
+              Capacitar o aluno a projetar interfaces digitais acessíveis, identidades
+              visuais e peças de comunicação orientadas a experiência do usuário.
+            </dd>
+
+            <dt class="col-sm-3">Carga horária</dt>
+            <dd class="col-sm-9">2.000 horas distribuídas em 4 semestres.</dd>
+
+            <dt class="col-sm-3">Público-alvo</dt>
+            <dd class="col-sm-9">
+              Criativos iniciantes, profissionais de marketing e desenvolvedores que
+              querem dominar design de produto.
+            </dd>
+
+            <dt class="col-sm-3">Descrição</dt>
+            <dd class="col-sm-9 mb-0">
+              Curso EAD com entregas práticas a cada módulo. O aluno conclui a formação
+              com um portfólio de cinco projetos avaliados por profissionais do mercado.
+            </dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-ih" data-bs-dismiss="modal">Fechar</button>
+          <a href="#contato" class="btn btn-ih" data-bs-dismiss="modal">Quero me inscrever</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Engenharia Civil -->
+  <div class="modal fade" id="modalEngenharia" tabindex="-1" aria-labelledby="tituloModalEngenharia" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="tituloModalEngenharia">Engenharia Civil</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-3">Objetivos</dt>
+            <dd class="col-sm-9">
+              Formar engenheiros aptos a projetar estruturas, planejar obras e aplicar
+              critérios de sustentabilidade e segurança do trabalho.
+            </dd>
+
+            <dt class="col-sm-3">Carga horária</dt>
+            <dd class="col-sm-9">3.600 horas distribuídas em 10 semestres.</dd>
+
+            <dt class="col-sm-3">Público-alvo</dt>
+            <dd class="col-sm-9">
+              Estudantes com afinidade por exatas e técnicos em edificações que buscam a graduação plena.
+            </dd>
+
+            <dt class="col-sm-3">Descrição</dt>
+            <dd class="col-sm-9 mb-0">
+              Laboratório próprio de materiais de construção, visitas técnicas a canteiros
+              de obra e projeto integrador a partir do sexto semestre.
+            </dd>
+          </dl>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-ih" data-bs-dismiss="modal">Fechar</button>
+          <a href="#contato" class="btn btn-ih" data-bs-dismiss="modal">Quero me inscrever</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 (JS bundle: navbar colapsável, dropdown e modal) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+</body>
+</html>
