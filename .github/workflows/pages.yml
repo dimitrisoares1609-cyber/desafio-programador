@@ -1,5 +1,10 @@
 # Publica o portal institucional (pasta portal-institucional/) no GitHub Pages.
-# Requer: Settings > Pages > Source: GitHub Actions.
+#
+# O trabalho vem em dois jobs de proposito. O ambiente reservado "github-pages"
+# so passa a existir depois que o Pages esta ligado no repositorio, e um job
+# que declara esse ambiente antes disso falha na hora, sem rodar passo algum.
+# Entao o primeiro job liga o Pages e prepara o artefato, sem declarar
+# ambiente, e o segundo publica ja com o ambiente disponivel.
 name: Publicar portal no GitHub Pages
 
 on:
@@ -15,28 +20,34 @@ permissions:
   pages: write
   id-token: write
 
-# Uma publicação por vez; a mais recente vence.
+# Uma publicacao por vez; a mais recente vence.
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
+  preparar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # enablement: true liga o Pages pela API com o token da execucao quando
+      # o repositorio ainda nao tem o Pages configurado.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Enviar a pasta do portal
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: portal-institucional
+
   publicar:
+    needs: preparar
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      # enablement: true faz o proprio workflow ativar o Pages pela API,
-      # usando o token da execucao, quando o repositorio ainda nao tem o
-      # Pages configurado. Evita depender de um passo manual nas Settings.
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: Enviar a pasta do portal
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: portal-institucional
       - id: deploy
         uses: actions/deploy-pages@v4
