@@ -28,7 +28,12 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      # enablement: true faz o proprio workflow ativar o Pages pela API,
+      # usando o token da execucao, quando o repositorio ainda nao tem o
+      # Pages configurado. Evita depender de um passo manual nas Settings.
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Enviar a pasta do portal
         uses: actions/upload-pages-artifact@v3
         with:
