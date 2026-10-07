@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Cores e fonte serão copiadas do site oficial na etapa 4 (layout). */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
