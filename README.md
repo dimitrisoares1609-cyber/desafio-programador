@@ -5,6 +5,9 @@ tabela ao lado do documento original e baixar a planilha.
 
 Desafio técnico Quick Filler.
 
+> Outros projetos neste repositório: [`portal-institucional/`](portal-institucional/)
+> e [`barbera/`](barbera/) (plataforma de agendamento e assinatura para barbearia).
+
 ## Rodar
 
 ```bash
