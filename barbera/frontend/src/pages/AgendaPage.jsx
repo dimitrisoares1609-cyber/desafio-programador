@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { CalendarPlus, Clock, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { CalendarClock, CalendarPlus, Clock, X } from 'lucide-react';
 import { api, isUpcoming, longDate, money, shortDate } from '../api.js';
 import { useAuth } from '../App.jsx';
 
 export default function AgendaPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [bookings, setBookings] = useState(null);
   const [error, setError] = useState('');
 
@@ -22,6 +23,8 @@ export default function AgendaPage() {
       setError(err.message);
     }
   }
+
+  const reschedule = (booking) => navigate('/reservar', { state: { reschedule: booking } });
 
   const upcoming = (bookings || []).filter(isUpcoming).reverse();
   const history = (bookings || []).filter((b) => !isUpcoming(b));
@@ -70,9 +73,14 @@ export default function AgendaPage() {
           </div>
           <div className="next-footer">
             <span className="mono">{next.duration} min · {money(next.price)}</span>
-            <button type="button" className="button button-ghost-light" onClick={() => cancel(next)}>
-              <X size={16} aria-hidden="true" /> Cancelar
-            </button>
+            <span className="next-actions">
+              <button type="button" className="button button-ghost-light" onClick={() => reschedule(next)}>
+                <CalendarClock size={16} aria-hidden="true" /> Remarcar
+              </button>
+              <button type="button" className="button button-ghost-light" onClick={() => cancel(next)}>
+                <X size={16} aria-hidden="true" /> Cancelar
+              </button>
+            </span>
           </div>
         </section>
       )}
@@ -82,7 +90,7 @@ export default function AgendaPage() {
           <h3 className="section-title">Próximas reservas</h3>
           <ul className="timeline">
             {later.map((b) => (
-              <BookingRow key={b.id} booking={b} onCancel={() => cancel(b)} />
+              <BookingRow key={b.id} booking={b} onCancel={() => cancel(b)} onReschedule={() => reschedule(b)} />
             ))}
           </ul>
         </section>
@@ -102,7 +110,7 @@ export default function AgendaPage() {
   );
 }
 
-function BookingRow({ booking, onCancel }) {
+function BookingRow({ booking, onCancel, onReschedule }) {
   const cancelled = booking.status === 'cancelled';
   return (
     <li className={`timeline-row${cancelled ? ' is-cancelled' : ''}`}>
@@ -118,7 +126,10 @@ function BookingRow({ booking, onCancel }) {
         {cancelled ? (
           <span className="tag tag-muted">cancelada</span>
         ) : onCancel ? (
-          <button type="button" className="link-button" onClick={onCancel}>Cancelar</button>
+          <span className="row-actions">
+            <button type="button" className="link-button" onClick={onReschedule}>Remarcar</button>
+            <button type="button" className="link-button" onClick={onCancel}>Cancelar</button>
+          </span>
         ) : (
           <span className="tag">concluída</span>
         )}

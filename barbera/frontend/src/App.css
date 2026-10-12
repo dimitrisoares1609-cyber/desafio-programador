@@ -919,11 +919,146 @@
   justify-content: space-between;
 }
 
-.plain-list li > span:first-child:not(.pro-initials),
-.plain-list li > span:nth-child(2) {
+.plain-list li > form {
+  flex: 1;
+}
+
+.plain-list li.is-inactive .item-text,
+.plain-list li.is-inactive .pro-initials {
+  opacity: 0.5;
+}
+
+.item-text {
   display: grid;
   flex: 1;
   min-width: 0;
+}
+
+.item-actions,
+.row-actions,
+.next-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.next-actions {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.icon-button-sm {
+  width: 32px;
+  height: 32px;
+}
+
+.link-small {
+  font-size: 0.85rem;
+}
+
+.field-hint {
+  margin-top: -12px;
+}
+
+.forgot-link {
+  justify-self: end;
+  margin-top: -8px;
+}
+
+.subsection-title {
+  font-size: 0.95rem;
+  margin: 24px 0 10px;
+}
+
+/* ---------- horário de funcionamento ---------- */
+
+.hours {
+  display: grid;
+  border-top: 1px solid var(--line);
+  margin-bottom: 8px;
+}
+
+.hours-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hours-day {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 600;
+  min-width: 120px;
+}
+
+.hours-times {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.select {
+  min-height: 38px;
+  padding: 6px 10px;
+  border: 1.5px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  font-family: var(--mono);
+}
+
+.closed-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 12px;
+  border-radius: 999px;
+  background: #fdf3e4;
+  font-size: 0.85rem;
+}
+
+.chip button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.chip button:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.closed-add {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.closed-add input {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+}
+
+.hours-note {
+  margin-top: 10px;
 }
 
 .plain-list small {

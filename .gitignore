@@ -8,3 +8,4 @@ exemplos/*.pdf
 __pycache__/
 .pytest_cache/
 .venv/
+barbera/backend/static/

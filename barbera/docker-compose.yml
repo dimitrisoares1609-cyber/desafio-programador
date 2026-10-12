@@ -4,8 +4,10 @@ services:
     volumes:
       - mongo-data:/data/db
 
-  backend:
-    build: ./backend
+  app:
+    build: .
+    ports:
+      - "8080:8000"
     environment:
       MONGO_URL: mongodb://mongo:27017
       DB_NAME: barbera
@@ -15,15 +17,13 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Barbera123!}
       STRIPE_API_KEY: ${STRIPE_API_KEY:-}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
     depends_on:
       - mongo
-
-  frontend:
-    build: ./frontend
-    ports:
-      - "8080:80"
-    depends_on:
-      - backend
 
 volumes:
   mongo-data:

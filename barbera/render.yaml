@@ -1,0 +1,44 @@
+# Blueprint do Render para a Barbera. Ao criar o Blueprint no painel do Render,
+# informe o caminho "barbera/render.yaml" (o render.yaml da raiz é de outro projeto).
+# O banco é um MongoDB externo (ex.: MongoDB Atlas, plano gratuito M0).
+services:
+  - type: web
+    name: barbera
+    runtime: docker
+    dockerContext: ./barbera
+    dockerfilePath: ./barbera/Dockerfile
+    plan: free
+    healthCheckPath: /api/
+    buildFilter:
+      paths:
+        - barbera/**
+    envVars:
+      - key: MONGO_URL
+        sync: false # string de conexão do Atlas: mongodb+srv://...
+      - key: DB_NAME
+        value: barbera
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: COOKIE_SECURE
+        value: "true"
+      # O Render põe um proxy na frente do serviço.
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"
+      - key: STRIPE_API_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false

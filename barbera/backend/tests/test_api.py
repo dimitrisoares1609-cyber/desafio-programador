@@ -6,7 +6,17 @@ from mongomock_motor import AsyncMongoMockClient
 
 import server
 
-TOMORROW = (date.today() + timedelta(days=2)).isoformat()
+
+def next_weekday(weekday, after_days=1):
+    """Próxima data (a partir de amanhã) que cai no dia da semana pedido (0 = segunda)."""
+    d = date.today() + timedelta(days=after_days)
+    while d.weekday() != weekday:
+        d += timedelta(days=1)
+    return d
+
+
+# Sempre uma quarta-feira futura: aberta no horário padrão, seja qual for o dia do teste.
+TOMORROW = next_weekday(2).isoformat()
 
 
 @pytest.fixture
@@ -200,3 +210,222 @@ def test_login_is_limited_per_ip(make_client):
     for i in range(server.LOGIN_MAX_PER_IP):
         login(c, f"pessoa{i}@example.com", "errada")
     assert login(c, "admin@barbera.local", "Barbera123!").status_code == 429
+
+
+# ---------------------------------------------------------------- equipe edita
+
+def admin_client(make_client):
+    a = make_client()
+    assert login(a, "admin@barbera.local", "Barbera123!").status_code == 200
+    return a
+
+
+def test_deactivated_professional_leaves_catalog_but_not_history(make_client):
+    c = make_client()
+    register(c)
+    booking = book(c).json()
+    admin = admin_client(make_client)
+
+    r = admin.patch("/api/admin/professionals/p1", json={"active": False, "name": "Rafael C."})
+    assert r.status_code == 200 and r.json()["active"] is False
+    assert "p1" not in {p["id"] for p in c.get("/api/catalog").json()["professionals"]}
+    assert book(c, "16:00").status_code == 404
+    assert c.get("/api/slots", params={"date": TOMORROW, "professional_id": "p1"}).status_code == 404
+    # a reserva antiga continua lá, com o nome da época
+    assert c.get("/api/bookings").json()[0]["professional_name"] == "Rafael Costa"
+    overview = admin.get("/api/admin/overview").json()
+    assert "p1" in {p["id"] for p in overview["professionals"]}
+    assert overview["stats"]["professionals"] == 2
+
+    admin.patch("/api/admin/professionals/p1", json={"active": True})
+    assert book(c, "16:00").status_code == 201
+    assert booking["id"]
+
+
+def test_edit_service_applies_to_new_bookings_only(make_client):
+    c = make_client()
+    register(c)
+    first = book(c, "10:00").json()
+    admin = admin_client(make_client)
+    r = admin.patch("/api/admin/services/s1", json={"price": 40, "duration": 60})
+    assert r.json()["price"] == 40
+    second = book(c, "15:00").json()
+    assert (first["price"], first["duration"]) == (35, 45)
+    assert (second["price"], second["duration"]) == (40, 60)
+
+
+def test_edit_validation_and_permissions(make_client):
+    c = make_client()
+    register(c)
+    assert c.patch("/api/admin/services/s1", json={"price": 1}).status_code == 403
+    admin = admin_client(make_client)
+    assert admin.patch("/api/admin/services/s1", json={}).status_code == 400
+    assert admin.patch("/api/admin/services/nao-existe", json={"price": 1}).status_code == 404
+    assert admin.patch("/api/admin/professionals/p1", json={"color": "vermelho"}).status_code == 422
+
+
+# ------------------------------------------------------------ horários da casa
+
+def week(open_="09:00", close="19:00", sunday=None):
+    return [{"open": open_, "close": close}] * 6 + [sunday]
+
+
+def test_default_hours_close_on_sunday(make_client):
+    c = make_client()
+    sunday = next_weekday(6).isoformat()
+    assert c.get("/api/slots", params={"date": sunday, "professional_id": "p1"}).json()["slots"] == []
+    assert c.get("/api/hours").json()["weekdays"][6] is None
+
+
+def test_admin_changes_hours_and_closed_dates(make_client):
+    c = make_client()
+    register(c)
+    admin = admin_client(make_client)
+    holiday = next_weekday(4)  # uma sexta
+    r = admin.put("/api/admin/hours", json={
+        "weekdays": week("10:00", "14:00", {"open": "09:00", "close": "12:00"}),
+        "closed_dates": [holiday.isoformat()],
+    })
+    assert r.status_code == 200
+
+    slots = c.get("/api/slots", params={"date": TOMORROW, "professional_id": "p1", "service_id": "s2"}).json()["slots"]
+    assert slots[0] == "10:00" and slots[-1] == "13:30"
+    sunday = next_weekday(6).isoformat()
+    assert c.get("/api/slots", params={"date": sunday, "professional_id": "p1"}).json()["slots"][0] == "09:00"
+    assert c.get("/api/slots", params={"date": holiday.isoformat(), "professional_id": "p1"}).json()["slots"] == []
+    assert book(c, "09:00").status_code == 409  # fora do novo horário
+
+
+def test_hours_validation(make_client):
+    c = make_client()
+    register(c)
+    assert c.put("/api/admin/hours", json={"weekdays": week()}).status_code == 403
+    admin = admin_client(make_client)
+    assert admin.put("/api/admin/hours", json={"weekdays": week("19:00", "09:00")}).status_code == 422
+    assert admin.put("/api/admin/hours", json={"weekdays": week("09:15", "18:00")}).status_code == 422
+    assert admin.put("/api/admin/hours", json={"weekdays": week()[:6]}).status_code == 422
+
+
+# ------------------------------------------------------------------ remarcar
+
+def test_reschedule_moves_the_booking_and_its_blocks(make_client):
+    c = make_client()
+    register(c)
+    booking = book(c, "14:00").json()  # 45 min: 14:00 e 14:30
+    # empurrar 30 min para frente sobrepõe o próprio horário, e pode
+    r = c.post(f"/api/bookings/{booking['id']}/reschedule", json={"date": TOMORROW, "time": "14:30"})
+    assert r.status_code == 200 and r.json()["time"] == "14:30"
+    assert book(c, "14:00", "s2").status_code == 201  # 14:00 foi liberado
+    assert book(c, "15:00", "s2").status_code == 409  # 15:00 agora é da reserva remarcada
+
+    other_day = next_weekday(3).isoformat()
+    r = c.post(f"/api/bookings/{booking['id']}/reschedule", json={"date": other_day, "time": "10:00"})
+    assert r.json()["date"] == other_day
+    assert book(c, "15:00", "s2").status_code == 201  # o dia antigo ficou livre
+    assert len(c.get("/api/bookings").json()) == 3
+
+
+def test_reschedule_rules(make_client):
+    a, b = make_client(), make_client()
+    register(a, "a@example.com")
+    register(b, "b@example.com")
+    mine = book(a, "10:00").json()
+    book(b, "16:00")
+    url = f"/api/bookings/{mine['id']}/reschedule"
+    assert a.post(url, json={"date": TOMORROW, "time": "16:00"}).status_code == 409  # ocupado
+    assert b.post(url, json={"date": TOMORROW, "time": "11:00"}).status_code == 404  # reserva de outro
+    a.patch(f"/api/bookings/{mine['id']}", json={"status": "cancelled"})
+    assert a.post(url, json={"date": TOMORROW, "time": "11:00"}).status_code == 409
+
+
+# ------------------------------------------------------------ esqueci a senha
+
+@pytest.fixture
+def outbox(monkeypatch):
+    sent = []
+
+    async def fake_send(to, subject, text):
+        sent.append({"to": to, "subject": subject, "text": text})
+
+    monkeypatch.setattr(server, "send_email", fake_send)
+    return sent
+
+
+def reset_token(mail):
+    return mail["text"].split("token=")[1].split()[0]
+
+
+def test_password_reset_flow(make_client, outbox):
+    c = make_client()
+    register(c)
+    old_session = make_client()
+    login(old_session, "joao@example.com", "123456")
+
+    unknown = c.post("/api/auth/forgot-password", json={"email": "ninguem@example.com"})
+    known = c.post("/api/auth/forgot-password", json={"email": "JOAO@example.com"})
+    assert unknown.json() == known.json()  # não revela quem tem conta
+    assert len(outbox) == 1 and outbox[0]["to"] == "joao@example.com"
+
+    token = reset_token(outbox[0])
+    fresh = make_client()
+    r = fresh.post("/api/auth/reset-password", json={"token": token, "password": "nova-senha"})
+    assert r.status_code == 200
+    assert fresh.get("/api/auth/me").status_code == 200  # já entra logado
+
+    assert old_session.get("/api/auth/me").status_code == 401  # sessões antigas caem
+    assert login(make_client(), "joao@example.com", "123456").status_code == 401
+    assert login(make_client(), "joao@example.com", "nova-senha").status_code == 200
+    # o link vale uma vez só
+    assert fresh.post("/api/auth/reset-password", json={"token": token, "password": "outra-senha"}).status_code == 400
+
+
+def test_password_reset_expiry_and_limit(make_client, outbox):
+    c = make_client()
+    register(c)
+    for _ in range(server.RESET_MAX_PER_HOUR + 2):
+        c.post("/api/auth/forgot-password", json={"email": "joao@example.com"})
+    assert len(outbox) == server.RESET_MAX_PER_HOUR
+
+    import asyncio
+    from datetime import datetime, timezone
+    asyncio.run(server.db.password_resets.update_many(
+        {}, {"$set": {"expires_at": datetime.now(timezone.utc) - timedelta(minutes=1)}}
+    ))
+    r = c.post("/api/auth/reset-password", json={"token": reset_token(outbox[0]), "password": "nova-senha"})
+    assert r.status_code == 400
+
+
+# ---------------------------------------------------------- configuração
+
+def test_production_refuses_dev_secrets(monkeypatch):
+    monkeypatch.setattr(server, "COOKIE_SECURE", True)
+    with pytest.raises(RuntimeError, match="JWT_SECRET"):
+        server.check_production_config()
+    monkeypatch.setattr(server, "JWT_SECRET", "x" * 48)
+    with pytest.raises(RuntimeError, match="ADMIN_PASSWORD"):
+        server.check_production_config()
+    monkeypatch.setattr(server, "ADMIN_PASSWORD", "uma-senha-forte")
+    server.check_production_config()
+
+
+def test_login_is_limited_per_email_across_ips(make_client, monkeypatch):
+    c = make_client()
+    register(c)
+    ips = iter(f"10.0.0.{i}" for i in range(100))
+    monkeypatch.setattr(server, "client_ip", lambda request: next(ips))
+    for _ in range(server.LOGIN_MAX_PER_EMAIL):
+        assert login(c, "joao@example.com", "errada").status_code == 401
+    assert login(c, "joao@example.com", "123456").status_code == 429
+
+
+def test_client_ip_uses_only_trusted_proxy_entries(monkeypatch):
+    class Req:
+        def __init__(self, xff):
+            self.client = type("C", (), {"host": "10.9.9.9"})()
+            self.headers = {"x-forwarded-for": xff} if xff else {}
+
+    assert server.client_ip(Req("1.1.1.1")) == "10.9.9.9"  # sem proxy configurado, ignora o cabeçalho
+    monkeypatch.setattr(server, "TRUSTED_PROXY_HOPS", 1)
+    # o visitante mandou "6.6.6.6"; o proxy acrescentou o IP real no fim
+    assert server.client_ip(Req("6.6.6.6, 203.0.113.7")) == "203.0.113.7"
+    assert server.client_ip(Req(None)) == "10.9.9.9"

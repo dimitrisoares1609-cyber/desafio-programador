@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { Navigate, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
+import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { CalendarDays, CalendarPlus, Crown, LayoutDashboard, LogOut, Scissors } from 'lucide-react';
 import { api } from './api.js';
 import AuthPage from './pages/AuthPage.jsx';
@@ -7,6 +7,7 @@ import AgendaPage from './pages/AgendaPage.jsx';
 import BookingPage from './pages/BookingPage.jsx';
 import PlansPage from './pages/PlansPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
+import ResetPasswordPage from './pages/ResetPasswordPage.jsx';
 
 const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
@@ -14,6 +15,7 @@ export const useAuth = () => useContext(AuthContext);
 export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { pathname } = useLocation();
 
   const refresh = useCallback(async () => {
     try {
@@ -39,7 +41,8 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={{ user, setUser, refresh }}>
-      {user ? <Shell /> : <AuthPage />}
+      {/* O link do e-mail de nova senha abre com ou sem sessão. */}
+      {pathname === '/redefinir-senha' ? <ResetPasswordPage /> : user ? <Shell /> : <AuthPage />}
     </AuthContext.Provider>
   );
 }
