@@ -5,3 +5,7 @@ dados/
 *.log
 # PDFs de exemplo vêm à parte (não versionados); só as planilhas geradas ficam no repo.
 exemplos/*.pdf
+__pycache__/
+.pytest_cache/
+.venv/
+barbera/backend/static/
