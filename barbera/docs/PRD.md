@@ -44,14 +44,14 @@ e um clube de assinatura.
 | Webhook | Confirma (`active`) e cancela (`cancelled`) assinaturas a partir do Stripe |
 | Equipe | Visão geral, agenda geral, assinantes, cadastro de profissional e serviço |
 | Acesso | Rotas da equipe exigem `role: admin`; cliente só vê e cancela as próprias reservas |
+| Concorrência | Trava no banco (índice único por bloco de 30 min) impede reservas simultâneas no mesmo horário |
+| Segurança | Limite de tentativas de login erradas por e-mail + IP e por IP (15 min) |
 | Interface | Responsiva: barra lateral no desktop, cabeçalho + barra inferior no celular |
 
 ## Backlog
 
 ### P0
 - Configurar `STRIPE_API_KEY` e `STRIPE_WEBHOOK_SECRET` de teste e validar o ciclo completo.
-- Índice único no banco para impedir duas reservas simultâneas no mesmo horário
-  (hoje a checagem é feita na aplicação).
 
 ### P1
 - Editar e desativar profissionais e serviços.

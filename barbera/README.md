@@ -87,7 +87,7 @@ barbera/
 |---|---|
 | Frontend | React 19, React Router 7, Vite, lucide-react, CSS próprio responsivo |
 | Backend | FastAPI, Motor (MongoDB assíncrono), PyJWT, bcrypt, Stripe SDK |
-| Banco | MongoDB: coleções `users`, `professionals`, `services`, `bookings` |
+| Banco | MongoDB: coleções `users`, `professionals`, `services`, `bookings`, `slot_locks`, `login_failures` |
 | Sessão | JWT de 7 dias em cookie HTTP-only `barbera_session` (SameSite=Lax) |
 
 ### Regras de agenda
@@ -100,6 +100,18 @@ barbera/
 - O servidor confere a disponibilidade de novo ao reservar (responde `409` se
   alguém pegou o horário antes) e usa nome e preço do catálogo, ignorando o que o
   navegador mandar.
+- Cada reserva grava os blocos de 30 min que ocupa em `slot_locks`, que tem
+  índice único por profissional + data + bloco. Assim, duas reservas que chegam
+  ao mesmo tempo no mesmo horário não passam as duas: o banco recusa a segunda.
+  Cancelar libera os blocos.
+
+### Limite de tentativas de login
+
+Senhas erradas ficam registradas em `login_failures` por 15 minutos (índice TTL).
+Dentro dessa janela, a partir de **5 erros para o mesmo e-mail vindo do mesmo IP**
+ou **20 erros do mesmo IP** em qualquer e-mail, o login responde `429` com
+`Retry-After`. Um login certo zera o contador daquele e-mail naquele IP. Na imagem
+Docker o uvicorn roda com `--proxy-headers`, então o IP é o do cliente, e não o do nginx.
 
 ## API
 

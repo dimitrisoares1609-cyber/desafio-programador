@@ -148,3 +148,55 @@ def test_demo_checkout(make_client):
 
 def test_webhook_requires_secret(make_client):
     assert make_client().post("/api/stripe/webhook", content=b"{}").status_code == 503
+
+
+def test_simultaneous_bookings_are_blocked_by_the_database(make_client, monkeypatch):
+    # Simula duas requisições que passaram juntas pela checagem de horários livres.
+    async def always_free(professional_id, day, duration):
+        return ["14:00", "14:30", "15:00"]
+
+    monkeypatch.setattr(server, "free_slots", always_free)
+    c = make_client()
+    register(c)
+    first = book(c, "14:00", "s1")  # 45 min: ocupa os blocos 14:00 e 14:30
+    assert first.status_code == 201
+    assert book(c, "14:00", "s2").status_code == 409
+    assert book(c, "14:30", "s2").status_code == 409
+    assert book(c, "15:00", "s2").status_code == 201
+    assert book(c, "14:30", "s2", "p2").status_code == 201  # outro profissional
+
+    c.patch(f"/api/bookings/{first.json()['id']}", json={"status": "cancelled"})
+    assert book(c, "14:30", "s2").status_code == 201  # cancelar libera os blocos
+
+
+def login(client, email, password):
+    return client.post("/api/auth/login", json={"email": email, "password": password})
+
+
+def test_login_is_limited_per_account(make_client):
+    c = make_client()
+    register(c, "alvo@example.com")
+    for _ in range(server.LOGIN_MAX_PER_ACCOUNT):
+        assert login(c, "alvo@example.com", "errada").status_code == 401
+    r = login(c, "alvo@example.com", "123456")
+    assert r.status_code == 429 and "Retry-After" in r.headers
+    # outra conta do mesmo IP continua entrando
+    register(c, "outra@example.com")
+    assert login(c, "outra@example.com", "123456").status_code == 200
+
+
+def test_successful_login_resets_the_counter(make_client):
+    c = make_client()
+    register(c)
+    for _ in range(server.LOGIN_MAX_PER_ACCOUNT - 1):
+        login(c, "joao@example.com", "errada")
+    assert login(c, "joao@example.com", "123456").status_code == 200
+    for _ in range(server.LOGIN_MAX_PER_ACCOUNT - 1):
+        assert login(c, "joao@example.com", "errada").status_code == 401
+
+
+def test_login_is_limited_per_ip(make_client):
+    c = make_client()
+    for i in range(server.LOGIN_MAX_PER_IP):
+        login(c, f"pessoa{i}@example.com", "errada")
+    assert login(c, "admin@barbera.local", "Barbera123!").status_code == 429

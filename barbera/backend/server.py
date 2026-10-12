@@ -4,6 +4,7 @@ FastAPI + MongoDB (Motor). A sessão é um JWT guardado em cookie HTTP-only, ent
 o frontend não toca no token; basta enviar as requisições com credenciais.
 """
 
+import math
 import os
 import uuid
 from contextlib import asynccontextmanager
@@ -19,6 +20,7 @@ from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request, Respons
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, EmailStr, Field
+from pymongo.errors import DuplicateKeyError
 
 load_dotenv()
 
@@ -39,6 +41,12 @@ TZ = ZoneInfo(os.environ.get("TZ_BARBEARIA", "America/Sao_Paulo"))
 OPEN_MINUTE = 9 * 60  # 09:00
 CLOSE_MINUTE = 19 * 60  # 19:00
 SLOT_STEP = 30  # minutos entre um início de horário e o próximo
+
+# Limite de tentativas de login erradas dentro da janela: por IP + e-mail
+# (protege uma conta) e só por IP (impede testar uma senha em muitos e-mails).
+LOGIN_WINDOW = timedelta(minutes=15)
+LOGIN_MAX_PER_ACCOUNT = 5
+LOGIN_MAX_PER_IP = 20
 
 SEED_PROFESSIONALS = [
     {"id": "p1", "name": "Rafael Costa", "specialty": "Cortes precisos", "initials": "RC", "color": "#356859"},
@@ -83,6 +91,19 @@ async def seed() -> None:
         })
     await db.users.create_index("email", unique=True)
     await db.bookings.create_index([("professional_id", 1), ("date", 1)])
+    # Cada reserva ocupa blocos de 30 min do profissional; o índice único é o
+    # que impede duas reservas no mesmo bloco mesmo se chegarem ao mesmo tempo.
+    await db.slot_locks.create_index([("professional_id", 1), ("date", 1), ("block", 1)], unique=True)
+    await db.slot_locks.create_index("booking_id")
+    await db.login_failures.create_index("created_at", expireAfterSeconds=int(LOGIN_WINDOW.total_seconds()))
+    await db.login_failures.create_index([("ip", 1), ("email", 1)])
+    # Reservas criadas antes das travas existirem ganham as suas.
+    async for b in db.bookings.find({"status": "confirmed", "date": {"$gte": datetime.now(TZ).date().isoformat()}}):
+        for lock in slot_locks_for(b):
+            await db.slot_locks.update_one(
+                {k: lock[k] for k in ("professional_id", "date", "block")},
+                {"$setOnInsert": lock}, upsert=True,
+            )
 
 
 @asynccontextmanager
@@ -142,6 +163,25 @@ def to_minutes(hhmm: str) -> int:
 
 def fmt_minutes(total: int) -> str:
     return f"{total // 60:02d}:{total % 60:02d}"
+
+
+def slot_locks_for(booking: dict) -> list[dict]:
+    start = to_minutes(booking["time"])
+    blocks = math.ceil(booking["duration"] / SLOT_STEP)
+    return [
+        {
+            "professional_id": booking["professional_id"],
+            "date": booking["date"],
+            "block": fmt_minutes(start + i * SLOT_STEP),
+            "booking_id": booking["id"],
+        }
+        for i in range(blocks)
+    ]
+
+
+def client_ip(request: Request) -> str:
+    # Atrás do nginx o uvicorn roda com --proxy-headers, então isto já é o IP real.
+    return request.client.host if request.client else "desconhecido"
 
 
 def set_session(response: Response, user_id: str) -> None:
@@ -244,10 +284,23 @@ async def register(body: RegisterIn, response: Response):
 
 
 @api.post("/auth/login")
-async def login(body: LoginIn, response: Response):
-    user = await db.users.find_one({"email": body.email.lower()}, {"_id": 0})
+async def login(body: LoginIn, request: Request, response: Response):
+    email = body.email.lower()
+    ip = client_ip(request)
+    since = datetime.now(timezone.utc) - LOGIN_WINDOW
+    per_account = await db.login_failures.count_documents({"ip": ip, "email": email, "created_at": {"$gte": since}})
+    per_ip = await db.login_failures.count_documents({"ip": ip, "created_at": {"$gte": since}})
+    if per_account >= LOGIN_MAX_PER_ACCOUNT or per_ip >= LOGIN_MAX_PER_IP:
+        raise HTTPException(
+            429, "Muitas tentativas de login. Aguarde 15 minutos e tente novamente.",
+            headers={"Retry-After": str(int(LOGIN_WINDOW.total_seconds()))},
+        )
+
+    user = await db.users.find_one({"email": email}, {"_id": 0})
     if not user or not check_password(body.password, user["password_hash"]):
+        await db.login_failures.insert_one({"ip": ip, "email": email, "created_at": datetime.now(timezone.utc)})
         raise HTTPException(401, "E-mail ou senha incorretos")
+    await db.login_failures.delete_many({"ip": ip, "email": email})
     set_session(response, user["id"])
     return public_user(user)
 
@@ -337,6 +390,14 @@ async def create_booking(body: BookingIn, user: dict = Depends(current_user)):
         "status": "confirmed",
         "created_at": now_iso(),
     }
+    # A checagem acima cobre o caso comum; as travas cobrem duas requisições
+    # simultâneas que passaram pela checagem ao mesmo tempo.
+    try:
+        for lock in slot_locks_for(booking):
+            await db.slot_locks.insert_one(lock)
+    except DuplicateKeyError:
+        await db.slot_locks.delete_many({"booking_id": booking["id"]})
+        raise HTTPException(409, "Esse horário não está mais disponível")
     await db.bookings.insert_one(dict(booking))
     return booking
 
@@ -353,9 +414,12 @@ async def update_booking(booking_id: str, body: BookingPatch, user: dict = Depen
     booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
     if not booking or (booking["user_id"] != user["id"] and user.get("role") != "admin"):
         raise HTTPException(404, "Reserva não encontrada")
-    if booking["status"] != "confirmed":
+    result = await db.bookings.update_one(
+        {"id": booking_id, "status": "confirmed"}, {"$set": {"status": body.status}}
+    )
+    if result.modified_count == 0:
         raise HTTPException(409, "Essa reserva já foi cancelada")
-    await db.bookings.update_one({"id": booking_id}, {"$set": {"status": body.status}})
+    await db.slot_locks.delete_many({"booking_id": booking_id})
     booking["status"] = body.status
     return booking
 
